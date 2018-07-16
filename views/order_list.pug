@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+  each order in order_list
+    li 
+      a(href=order.url) #{order.user.firstName} : #{order.price} - 
+      span.text-success #{order.price}
+
+  else
+    li There are no orders.
