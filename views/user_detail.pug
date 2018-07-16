@@ -1,23 +1,11 @@
 extends layout
 
 block content
-  h1 #{title}: #{user.firstName}
+  h1 #{title}: #{user.username}
   
-  p #[strong last name:] #{user.lastName}
+  p #[strong last name:] #{user.email}
   
   div(style='margin-left:20px;margin-top:20px')
-    h4 Orders
-    
-    each order in orders
-      hr
-      p #[strong Price:] #{order.price}
-      p #[strong Id:]&nbsp;
-        a(href=order.url) #{order._id}
- 
-    else
-      p There are no orders.
-      
-    hr
     p
       a(href=user.url+'/delete') Delete user
     p

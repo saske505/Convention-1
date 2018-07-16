@@ -2,9 +2,14 @@ var express = require('express');
 
 var router = express.Router();
     
-// GET home page
+// Redirect / to index
 router.get('/', function(req, res, next) {
-    res.redirect('/catalog');
+    res.redirect('/index');
+});
+
+// GET home page
+router.get('/index', function(req, res, next) {
+    res.render('index');
 });
 
 module.exports = router;

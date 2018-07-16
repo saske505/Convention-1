@@ -1,15 +1,19 @@
+/* global __dirname */
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-var pug = require('pug');
 var expressValidator = require('express-validator');
+var session = require('express-session');
 //var favicon = require('serve-favicon');
+
+require('pug');
 
 // require routes
 var indexRouter = require('./routes/index');
-var catalogRouter = require('./routes/catalog');
+var userRouter = require('./routes/user');
 
 // mongoDB Credentials
 var mongoUri = 'mongodb://admin:woopwoop1@ds137611.mlab.com:37611/convention';
@@ -58,10 +62,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
+app.use(session({
+    secret: 'work hard',
+    resave: true,
+    saveUninitialized: false
+}));
 
 // set routers
 app.use('/', indexRouter);
-app.use('/catalog', catalogRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

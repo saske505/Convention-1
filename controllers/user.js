@@ -1,8 +1,8 @@
 var async = require('async');
+var bcrypt = require('bcrypt');
 
-// require models
+// require Model
 var User = require('../models/user');
-var Order = require('../models/order');
 
 // require functions from express-validator
 var { body, validationResult } = require('express-validator/check');
@@ -13,23 +13,9 @@ exports.index = function(req, res) {
     async.parallel({
         user_count: function(callback) {
             User.count({}, callback); // Pass an empty object as match condition to find all documents of this collection
-        },
-        order_count: function(callback) {
-            Order.count({}, callback);
         }
     }, function(err, results) {
         res.render('index', {title: 'Convention', error: err, data: results});
-    });
-};
-
-// display list of all Users
-exports.user_list = function(req, res, next) {
-
-  User.find({}, 'firstName lastName')
-    .exec(function (err, list_users) {
-      if (err) { return next(err); }
-      //Successful, so render
-      res.render('user_list', {title: 'User List', user_list: list_users});
     });
 };
 
@@ -39,10 +25,6 @@ exports.user_detail = function(req, res, next) {
         user: function(callback) {
             User.findById(req.params.id)
               .exec(callback);
-        },
-        order: function(callback) {
-          Order.find({ 'user': req.params.id })
-          .exec(callback);
         }
     }, function(err, results) {
         if (err) { return next(err); }
@@ -52,24 +34,31 @@ exports.user_detail = function(req, res, next) {
             return next(err);
         }
         // Successful, so render.
-        res.render('user_detail', { title: 'User', user:  results.user, orders: results.order } );
+        res.render('user_detail', { title: 'User', user:  results.user } );
     });
 };
 
 // display User create form on GET
+//input#userid.form-control(type='hidden', name=userid value=(undefined === user ? '' : user._id)) figure out how to store the session
 exports.user_create_get = function(req, res, next) { 
-    res.render('user_form', {title: 'Create User'});
+    res.render('user_signup', {title: 'Sign Up'});
 };
 
 // handle User create on POST
 exports.user_create_post =  [
-    // Validate that the firstName & lastName field is not empty.
-    body('firstName', 'First Name required').isLength({ min: 1 }).trim(),
-    body('lastName', 'Last Name required').isLength({ min: 1 }).trim(),
+    // Validate the User form
+    body('email', 'Email Address required').isLength({ min: 1 }).trim(),
+    body('username', 'Username required').isLength({ min: 1 }).trim(),
+    body('password', 'Password required').isLength({ min: 1 }).trim(),
+    body('passwordConf', 'PasswordConf required').isLength({ min: 1 }).trim(),
     
-    // Sanitize (trim and escape) the firstName & lastName field.
-    sanitizeBody('firstName').trim().escape(),
-    sanitizeBody('lastName').trim().escape(),
+    //create some logic to ensure the passwords match
+    
+    // Sanitize the form's fields
+    sanitizeBody('email').trim().escape(),
+    sanitizeBody('username').trim().escape(),
+    sanitizeBody('password').trim().escape(),
+    sanitizeBody('passwordConf').trim().escape(),
 
     // Process request after validation and sanitization.
     (req, res, next) => {
@@ -77,49 +66,75 @@ exports.user_create_post =  [
         const errors = validationResult(req);
 
         // Create a user object with escaped and trimmed data.
-        var user = new User(
-            { 
-                firstName: req.body.firstName,
-                lastName: req.body.lastName
-            }
-        );
+        var userData = { 
+                email: req.body.email,
+                username: req.body.username,
+                password: req.body.password,
+                passwordConf: req.body.passwordConf
+            };
 
-        if (!errors.isEmpty()) {
-            //There are errors. Render the form again with sanitized values/error messages.
-            res.render('user_form', { title: 'Create User', user: user, errors: errors.array()});
-        return;
-        }
-        else {
-            user.save(function (err) {
-                if (err) { 
-                    return next(err); 
-                }
-                
+        User.create(userData, function (err, user) {
+            if (err) {
+                return next(err);
+            } else {
                 // User saved. Redirect to user detail page
                 res.redirect(user.url);
-            });
-        }
+            }
+        });
     }
 ];
+
+//
+// display User create form on GET
+//input#userid.form-control(type='hidden', name=userid value=(undefined === user ? '' : user._id)) figure out how to store the session
+exports.user_login_get = function(req, res, next) { 
+    res.render('user_login', {title: 'Log In'});
+};
+
+// handle User create on POST
+exports.user_login_post =  [
+    // Validate the User form
+    body('username', 'Username required').isLength({ min: 1 }).trim(),
+    body('password', 'Password required').isLength({ min: 1 }).trim(),
+    
+    // Sanitize the form's fields
+    sanitizeBody('username').trim().escape(),
+    sanitizeBody('password').trim().escape(),
+
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+        
+        User.authenticate(req.body.username, req.body.password, function (error, user) {
+            if (error || !user) {
+              var err = new Error('Wrong username or password.');
+              err.status = 401;
+              return next(err);
+            } else {
+              req.session.userId = user._id; // find out what the fuck this is...
+              return res.redirect(user.url);
+            }
+          });
+    }
+];
+//
 
 // display User delete form on GET
 exports.user_delete_get = function(req, res, next) {
     async.parallel({
         user: function(callback) {
             User.findById(req.params.id).exec(callback);
-        },
-        users_orders: function(callback) {
-          Order.find({ 'user': req.params.id }).exec(callback);
         }
     }, function(err, results) {
         if (err) { return next(err); }
         
         if (results.user === null) { // No results.
-            res.redirect('/catalog/users');
+            res.redirect('users');
         }
         
         // Successful, so render.
-        res.render('user_delete', {title: 'Delete User', user: results.user, user_orders: results.users_orders});
+        res.render('user_delete', {title: 'Delete User', user: results.user});
     });
 };
 
@@ -128,41 +143,26 @@ exports.user_delete_post = function(req, res, next) {
     async.parallel({
         user: function(callback) {
           User.findById(req.body.userid).exec(callback);
-        },
-        users_orders: function(callback) {
-          Order.find({'user': req.body.userid}).exec(callback);
         }
     }, function(err, results) {
         if (err) { return next(err); }
         
         // Success
-        if (results.users_orders.length > 0) {
-            // User has orders. Render in same way as for GET route.
-            res.render('user_delete', { title: 'Delete User', user: results.user, user_orders: results.users_orders } );
-            
-            return;
-        }
-        else {
-            // User has no orders. Delete object and redirect to the list of users.
-            User.findByIdAndRemove(req.body.userid, function deleteUser(err) {
-                if (err) { return next(err); }
-                
-                // Success - go to user list
-                res.redirect('/catalog/users');
-            });
-        }
+        User.findByIdAndRemove(req.body.userid, function deleteUser(err) {
+            if (err) { return next(err); }
+
+            // Success - go to user list
+            res.redirect('users');
+        });
     });
 };
 
 // display user update form on GET.
 exports.user_update_get = function(req, res, next) {
-    // Get book & order for form.
+    // Get User for form
     async.parallel({
         user: function(callback) {
-            User.findById(req.params.id).populate('order').exec(callback);
-        },
-        orders: function(callback) {
-            Order.find(callback);
+            User.findById(req.params.id).exec(callback);
         }
         }, function(err, results) {
             if (err) { return next(err); }
@@ -173,7 +173,7 @@ exports.user_update_get = function(req, res, next) {
             }
             // Success.
 
-            res.render('user_form', { title: 'Update User', orders:results.orders, user: results.user });
+            res.render('user_signup', { title: 'Update User', user: results.user });
         });
 };
 
@@ -182,10 +182,18 @@ exports.user_update_post = [
     // Validate fields.
     body('firstName', 'First Name must not be empty.').isLength({ min: 1 }).trim(),
     body('lastName', 'Last Name must not be empty.').isLength({ min: 1 }).trim(),
+    body('username', 'Username must not be empty.').isLength({ min: 1 }).trim(),
+    body('email', 'Email Address must not be empty.').isLength({ min: 1 }).trim(),
+    body('mobile', 'Mobile Number must not be empty.').isLength({ min: 1 }).trim(),
+    body('password', 'Password must not be empty.').isLength({ min: 1 }).trim(),
 
     // Sanitize fields.
     sanitizeBody('firstName').trim().escape(),
     sanitizeBody('lastName').trim().escape(),
+    sanitizeBody('username').trim().escape(),
+    sanitizeBody('email').trim().escape(),
+    sanitizeBody('mobile').trim().escape(),
+    sanitizeBody('password').trim().escape(),
 
     // Process request after validation and sanitization.
     (req, res, next) => {
@@ -196,24 +204,14 @@ exports.user_update_post = [
         var user = new User(
           { firstName: req.body.firstName,
             lastName: req.body.lastName,
+            userName: req.body.userName,
+            email: req.body.email,
+            mobile: req.body.mobile,
+            password: req.body.password,
             _id:req.params.id //This is required, or a new ID will be assigned!
            });
 
-        if (!errors.isEmpty()) {
-            // There are errors. Render form again with sanitized values/error messages.
-
-            // Get all orders for form.
-            async.parallel({
-                orders: function(callback) {
-                    Order.find(callback);
-                }
-            }, function(err, results) {
-                if (err) { return next(err); }
-                res.render('user_form', { title: 'Update Order',orders:results.orders, user: user, errors: errors.array() });
-            });
-            return;
-        }
-        else {
+        if (errors.isEmpty()) {
             // Data from form is valid. Update the record.
             User.findByIdAndUpdate(req.params.id, user, {}, function (err,theUser) {
                 if (err) { return next(err); }
