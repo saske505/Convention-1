@@ -197,8 +197,8 @@ exports.user_update_get = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             }
+            
             // Success.
-
             res.render('user_signup', { title: 'Update User', user: results.user });
         });
 };
@@ -206,43 +206,49 @@ exports.user_update_get = function(req, res, next) {
 // handle user update on POST.
 exports.user_update_post = [
     // Validate fields.
-    body('firstName', 'First Name must not be empty.').isLength({ min: 1 }).trim(),
-    body('lastName', 'Last Name must not be empty.').isLength({ min: 1 }).trim(),
-    body('username', 'Username must not be empty.').isLength({ min: 1 }).trim(),
     body('email', 'Email Address must not be empty.').isLength({ min: 1 }).trim(),
-    body('mobile', 'Mobile Number must not be empty.').isLength({ min: 1 }).trim(),
+    body('username', 'Username must not be empty.').isLength({ min: 1 }).trim(),
     body('password', 'Password must not be empty.').isLength({ min: 1 }).trim(),
-
+    body('passwordConf', 'Password Confirmation must not be empty.').isLength({ min: 1 }).trim(),
+    
     // Sanitize fields.
-    sanitizeBody('firstName').trim().escape(),
-    sanitizeBody('lastName').trim().escape(),
-    sanitizeBody('username').trim().escape(),
     sanitizeBody('email').trim().escape(),
-    sanitizeBody('mobile').trim().escape(),
+    sanitizeBody('username').trim().escape(),
     sanitizeBody('password').trim().escape(),
+    sanitizeBody('passwordConf').trim().escape(),
 
     // Process request after validation and sanitization.
     (req, res, next) => {
+        console.log('1');
         // Extract the validation errors from a request.
         const errors = validationResult(req);
 
         // Create a User object with escaped/trimmed data and old id.
-        var user = new User(
-          { firstName: req.body.firstName,
+        var user = new User({ 
+            firstName: req.body.firstName,
             lastName: req.body.lastName,
             userName: req.body.userName,
             email: req.body.email,
             mobile: req.body.mobile,
             password: req.body.password,
             _id:req.params.id //This is required, or a new ID will be assigned!
-           });
-
-        if (errors.isEmpty()) {
+        });
+        
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/error messages.
+            res.render('user_signup', { title: 'Update User', user: user, errors: errors.array() });
+            
+            return;
+        }
+        else {
             // Data from form is valid. Update the record.
-            User.findByIdAndUpdate(req.params.id, user, {}, function (err,theUser) {
-                if (err) { return next(err); }
-                   // Successful - redirect to user detail page.
-                   res.redirect(theUser.url);
+            User.findByIdAndUpdate(req.params.id, user, {}, function (err,theuser) {
+                if (err) {
+                    return next(err);
+                }
+                
+                // Successful - redirect to book detail page.
+                res.redirect(theuser.url);
             });
         }
     }
