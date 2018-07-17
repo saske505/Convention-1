@@ -2,4 +2,7 @@ extends layout
 
 block content
   h1= title
-  p Welcome to the Convention site
+    p Welcome to the Convention site
+    
+    if user
+      user.userid

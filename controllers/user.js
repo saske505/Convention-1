@@ -8,14 +8,26 @@ var User = require('../models/user');
 var { body, validationResult } = require('express-validator/check');
 var { sanitizeBody } = require('express-validator/filter');
 
-exports.index = function(req, res) {   
+exports.requiresLogin = function (req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        var err = new Error('You must be logged in to view this page.');
+        
+        err.status = 401;
+        
+        return next(err);
+    }
+};
+
+exports.index = function (req, res) {   
     
     async.parallel({
         user_count: function(callback) {
             User.count({}, callback); // Pass an empty object as match condition to find all documents of this collection
         }
     }, function(err, results) {
-        res.render('index', {title: 'Convention', error: err, data: results});
+        res.redirect('/');
     });
 };
 
@@ -34,6 +46,7 @@ exports.user_detail = function(req, res, next) {
             return next(err);
         }
         // Successful, so render.
+        
         res.render('user_detail', { title: 'User', user:  results.user } );
     });
 };
@@ -112,13 +125,28 @@ exports.user_login_post =  [
               err.status = 401;
               return next(err);
             } else {
-              req.session.userId = user._id; // find out what the fuck this is...
-              return res.redirect(user.url);
+              req.session.userId = user._id;
+              console.log(user._id);
+              return res.render('index');
             }
           });
     }
 ];
-//
+
+
+// logout on GET
+exports.user_logout_get = function(req, res, next) {
+    if (req.session) {
+      // delete session object
+      req.session.destroy(function(err) {
+        if(err) {
+            return next(err);
+        } else {
+            return res.redirect('/');
+        }
+      });
+    }
+};
 
 // display User delete form on GET
 exports.user_delete_get = function(req, res, next) {

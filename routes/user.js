@@ -16,7 +16,10 @@ router.get('/login', user_controller.user_login_get);
 // POST request for logging in
 router.post('/login', user_controller.user_login_post);
 
+// GET /logout
+router.get('/logout', user_controller.user_logout_get);
+
 // GET request for one User
-router.get('/:id', user_controller.user_detail);
+router.get('/:id', user_controller.requiresLogin, user_controller.user_detail);
 
 module.exports = router;
