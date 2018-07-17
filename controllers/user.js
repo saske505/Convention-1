@@ -158,7 +158,7 @@ exports.user_delete_get = function(req, res, next) {
         if (err) { return next(err); }
         
         if (results.user === null) { // No results.
-            res.redirect('users');
+            res.redirect('user/' + req.params.id);
         }
         
         // Successful, so render.
@@ -174,13 +174,11 @@ exports.user_delete_post = function(req, res, next) {
         }
     }, function(err, results) {
         if (err) { return next(err); }
-        
         // Success
         User.findByIdAndRemove(req.body.userid, function deleteUser(err) {
             if (err) { return next(err); }
-
             // Success - go to user list
-            res.redirect('users');
+            res.render('index');
         });
     });
 };

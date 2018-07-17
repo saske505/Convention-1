@@ -1,28 +1,12 @@
 extends layout
 
 block content
-  h1 #{title}: #{user.firstName}
-  p= user.lastName
-  
-  if user_orders.length
-  
-    p #[strong Delete the following orders before attempting to delete this user.]
-  
-    div(style='margin-left:20px;margin-top:20px')
+  h1 #{title}: #{user.firstname}
+  p= user.lastname
+  p Do you really want to delete this User?
 
-      h4 Orders
-    
-      dl
-      each order in user_orders
-        dt 
-          a(href=order.url) #{order.user}
-        dd #{order.price}
+  form(method='POST' action='')
+    div.form-group
+      input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
 
-  else
-    p Do you really want to delete this User?
-    
-    form(method='POST' action='')
-      div.form-group
-        input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
-
-      button.btn.btn-primary(type='submit') Delete
+    button.btn.btn-primary(type='submit') Delete
