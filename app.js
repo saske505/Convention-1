@@ -7,7 +7,6 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var expressValidator = require('express-validator');
 var session = require('express-session');
-//var favicon = require('serve-favicon');
 
 require('pug');
 
@@ -20,15 +19,15 @@ var mongoUri = 'mongodb://admin:woopwoop1@ds137611.mlab.com:37611/convention';
 
 // setup default mongoose connection 
 const options = {
-  autoIndex: false, // Don't build indexes
+  autoIndex: false, // don't build indexes
   useNewUrlParser: true,
-  reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-  reconnectInterval: 500, // Reconnect every 500ms
-  poolSize: 10, // Maintain up to 10 socket connections
-  // If not connected, return errors immediately rather than waiting for reconnect
+  reconnectTries: Number.MAX_VALUE, // never stop trying to reconnect
+  reconnectInterval: 500, // reconnect every 500ms
+  poolSize: 10, // maintain up to 10 socket connections
+  // ff not connected, return errors immediately rather than waiting for reconnect
   bufferMaxEntries: 0,
-  connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
-  socketTimeoutMS: 45000 // Close sockets after 45 seconds of inactivity
+  connectTimeoutMS: 10000, // give up initial connection after 10 seconds
+  socketTimeoutMS: 45000 // close sockets after 45 seconds of inactivity
 };
 mongoose.connect(mongoUri, options, function(err) {
     if (err) {
@@ -38,7 +37,7 @@ mongoose.connect(mongoUri, options, function(err) {
     }
 });
 
-// get mongoose to use the global promise library
+// set mongoose to use the global promise library
 mongoose.Promise = global.Promise;
 
 // get the default connection;
@@ -55,7 +54,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // set app middleware libraries
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

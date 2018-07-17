@@ -1,12 +1,12 @@
 extends layout
 
 block content
-  h1 #{title}: #{user.firstname}
+  h1 #{title}: #{user.username}, #{user.email}
   p= user.lastname
   p Do you really want to delete this User?
 
   form(method='POST' action='')
     div.form-group
-      input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
+      input#userid.form-control(type='hidden',name='userid', required='true', value=user._id)
 
     button.btn.btn-primary(type='submit') Delete

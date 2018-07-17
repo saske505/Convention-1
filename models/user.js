@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 
+// create user schema
 var UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -24,50 +25,50 @@ var UserSchema = new mongoose.Schema({
   }
 });
 
-//authenticate input against database
+// authenticate input against database
 UserSchema.statics.authenticate = function (username, password, callback) {
-  User.findOne({username: username})
-    .exec(function (err, user) {
-      if (err) {
-        return callback(err);
-      } else if (!user) {
-        var err = new Error('User not found.');
-        
-        err.status = 401;
-        
-        return callback(err);
-      }
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (result === true) {
-          return callback(null, user);
-        } else {
-          return callback();
+    User.findOne({username: username}).exec(function (err, user) {
+        if (err) {
+          return callback(err);
+        } else if (!user) {
+          var err = new Error('User not found.');
+
+          err.status = 401;
+
+          return callback(err);
         }
-      });
+        
+        bcrypt.compare(password, user.password, function (err, result) {
+            if (result === true) {
+                return callback(null, user);
+            } else {
+                return callback();
+            }
+        });
     });
 };
 
-//hashing a password before saving it to the database
+// hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
-  var user = this;
+    var user = this;
   
-  bcrypt.hash(user.password, 10, function (err, hash) {
-    if (err) {
-      return next(err);
-    }
+    bcrypt.hash(user.password, 10, function (err, hash) {
+        if (err) {
+          return next(err);
+        }
     
-    user.password = hash;
+        user.password = hash;
     
-    next();
-  });
+        next();
+    });
 });
 
-// Virtual for User's URL
+// virtual for User's URL
 UserSchema.virtual('url').get(function () {
   return '/user/' + this._id;
 });
 
 var User = mongoose.model('User', UserSchema);
 
-//Export User Model
+// export user Model
 module.exports = User;
