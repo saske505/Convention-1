@@ -5,8 +5,8 @@ block content
 
   form(method='POST' action='')
     div.form-group
-      label(for='username') Username:
-      input#username.form-control(type='text', placeholder='Username' name='username' value=(undefined===user ? '' : user.username))
+      label(for='email') Email Address:
+      input#email.form-control(type='text', placeholder='Email Address' name='email' value=(undefined===user ? '' : user.email))
       label(for='password') Password:
       input#password.form-control(type='password', placeholder='Password' name='password' value=(undefined===user ? '' : user.password))
     button.btn.btn-primary(type='submit') Log In
@@ -15,3 +15,6 @@ block content
     ul
       for error in errors
         li!= error.msg
+  if authFail 
+    ul
+      li!= authFail

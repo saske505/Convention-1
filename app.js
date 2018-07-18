@@ -8,6 +8,10 @@ var mongoose = require('mongoose');
 var expressValidator = require('express-validator');
 var session = require('express-session');
 
+// use in the future
+//require('moment');
+//require('chalk');
+
 require('pug');
 
 // require routes
@@ -24,11 +28,12 @@ const options = {
   reconnectTries: Number.MAX_VALUE, // never stop trying to reconnect
   reconnectInterval: 500, // reconnect every 500ms
   poolSize: 10, // maintain up to 10 socket connections
-  // ff not connected, return errors immediately rather than waiting for reconnect
+  // if not connected, return errors immediately rather than waiting for reconnect
   bufferMaxEntries: 0,
   connectTimeoutMS: 10000, // give up initial connection after 10 seconds
   socketTimeoutMS: 45000 // close sockets after 45 seconds of inactivity
 };
+
 mongoose.connect(mongoUri, options, function(err) {
     if (err) {
         throw err;
@@ -56,7 +61,7 @@ app.set('view engine', 'pug');
 // set app middleware libraries
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
@@ -83,13 +88,13 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  
+
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
+    // render the error page
+    res.status(err.status || 500);
   
-  res.render('error', {title: err.status, error: err});
+    res.render('error', {title: err.status, error: err});
 });
 
 // export app

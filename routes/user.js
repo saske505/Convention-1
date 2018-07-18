@@ -5,10 +5,10 @@ var router = express.Router();
 var user_controller = require('../controllers/user');
 
 // GET request for creating a user
-router.get('/signup', user_controller.user_create_get);
+router.get('/signup', user_controller.user_signup_get);
 
 // POST request for creating a user
-router.post('/signup', user_controller.user_create_post);
+router.post('/signup', user_controller.user_signup_post);
 
 // GET request for logging in
 router.get('/login', user_controller.user_login_get);
