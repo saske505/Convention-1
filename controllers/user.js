@@ -137,8 +137,6 @@ exports.user_login_post =  [
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
             
-            console.log(errors);
-            
             res.render('user_login', {title: 'Log In', errors: errors.array()});
         } else {
             User.authenticate(req.body.email, req.body.password, function (error, user) {
@@ -147,9 +145,7 @@ exports.user_login_post =  [
                 } else {
                     req.session.userId = user._id;
 
-                    console.log(user._id);
-
-                    return res.render('index');
+                    return res.redirect(user.url);
                 }
             });
         }
@@ -237,48 +233,49 @@ exports.user_update_get = function(req, res, next) {
         }
 
         // success
-        res.render('user_signup', { title: 'Update User', user: results.user });
+        res.render('user_update', {title: 'Update User', user: results.user});
     });
 };
 
 // handle user update on POST
 exports.user_update_post = [
-    // validate fields
-    check('email', 'Email Address must not be empty.').isLength({ min: 1 }).trim(),
-    check('username', 'Username must not be empty.').isLength({ min: 1 }).trim(),
-    check('password', 'Password must not be empty.').isLength({ min: 1 }).trim(),
-    check('passwordConf', 'Password Confirmation must not be empty.').isLength({ min: 1 }).trim(),
+    // validate the user form
+    check('email', 'Email Address required')
+        .isLength({min: 1})
+        .trim(),
+    check('email', 'Invalid email address')
+        .isEmail(),
+    check('username', 'Username required')
+        .isLength({min: 1})
+        .trim(),
     
-    // sanitize fields
+    // sanitize the form's fields
     sanitizeBody('email').trim().escape(),
     sanitizeBody('username').trim().escape(),
-    sanitizeBody('password').trim().escape(),
-    sanitizeBody('passwordConf').trim().escape(),
 
     // process request after validation and sanitization
     (req, res, next) => {
         // extract the validation errors from a request
         var errors = validationResult(req);
-
-        // create a user object with escaped/trimmed data and old id
-        var user = new User({ 
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            userName: req.body.userName,
-            email: req.body.email,
-            mobile: req.body.mobile,
-            password: req.body.password,
-            _id:req.params.id
-        });
         
+        var oldUser = function(callback) {
+            User.findById(req.body.userid).exec(callback);
+        };
+    
         if (!errors.isEmpty()) {
             // there are errors, render form again with sanitized values/error messages
-            res.render('user_signup', { title: 'Update User', user: user, errors: errors.array() });
+            res.render('user_update', { title: 'Update User', user: oldUser, errors: errors.array() });
             
             return;
         }
         else {
-            // data from form is valid, Update the record
+            // create a user object with escaped/trimmed data and old id
+            var user = new User({ 
+                email: req.body.email,
+                username: req.body.username,
+                _id:req.params.id
+            });
+            
             User.findByIdAndUpdate(req.params.id, user, {}, function (err,theuser) {
                 if (err) {
                     return next(err);
