@@ -9,6 +9,8 @@ var { sanitizeBody } = require('express-validator/filter');
 
 // this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
+    console.log(req.session);
+    
     if (req.session && req.session.userId) {
         return next();
     } else {
@@ -60,8 +62,8 @@ exports.user_signup_post =  [
     check('email', 'Email Address required')
         .isLength({min: 1})
         .trim(),
-    check('email', 'Invalid email address')
-        .isEmail(),
+//    check('email', 'Invalid email address')
+//        .isEmail(),
     check('username', 'Username required')
         .isLength({min: 1})
         .trim(),
@@ -100,6 +102,7 @@ exports.user_signup_post =  [
                 if (err) {
                     return next(err);
                 } else {
+                    req.session.userId = user._id;
                     // user saved, redirect to user detail page
                     res.redirect(user.url);
                 }
@@ -243,8 +246,8 @@ exports.user_update_post = [
     check('email', 'Email Address required')
         .isLength({min: 1})
         .trim(),
-    check('email', 'Invalid email address')
-        .isEmail(),
+//    check('email', 'Invalid email address')
+//        .isEmail(),
     check('username', 'Username required')
         .isLength({min: 1})
         .trim(),

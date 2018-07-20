@@ -17,22 +17,21 @@ router.get('/login', user_controller.user_login_get);
 router.post('/login', user_controller.user_login_post);
 
 // GET request for logging out
-router.get('/logout', user_controller.user_logout_get);
+router.get('/logout', user_controller.requiresLogin, user_controller.user_logout_get);
 
 // GET request for deleting a user
-router.get('/:id/delete', user_controller.user_delete_get);
+router.get('/:id/delete', user_controller.requiresLogin, user_controller.user_delete_get);
 
 // POST request for deleting a user
-router.post('/:id/delete', user_controller.user_delete_post);
+router.post('/:id/delete', user_controller.requiresLogin, user_controller.user_delete_post);
 
 // GET request for updating a user
-router.get('/:id/update', user_controller.user_update_get);
+router.get('/:id/update', user_controller.requiresLogin, user_controller.user_update_get);
 
 // POST request for updating a user
-router.post('/:id/update', user_controller.user_update_post);
+router.post('/:id/update', user_controller.requiresLogin, user_controller.user_update_post);
 
 // GET request for a user's details
-//router.get('/:id', user_controller.requiresLogin, user_controller.user_detail);
-router.get('/:id', user_controller.user_detail);
+router.get('/:id', user_controller.requiresLogin, user_controller.user_detail);
 
 module.exports = router;
