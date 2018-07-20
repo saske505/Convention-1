@@ -148,7 +148,7 @@ exports.user_login_post =  [
                 } else {
                     req.session.userId = user._id;
 
-                    return res.redirect(user.url);
+                    res.render('user_login', {title: 'Log In', session: req.session});
                 }
             });
         }

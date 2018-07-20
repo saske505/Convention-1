@@ -3,3 +3,8 @@ extends layout
 block content
   h1= title
     p Welcome to the Convention site
+    if session && session.userId
+      p you are logged in
+    else
+      p you are logged out
+      

@@ -17,7 +17,7 @@ router.get('/login', user_controller.user_login_get);
 router.post('/login', user_controller.user_login_post);
 
 // GET request for logging out
-router.get('/logout', user_controller.requiresLogin, user_controller.user_logout_get);
+router.get('/logout', user_controller.user_logout_get);
 
 // GET request for deleting a user
 router.get('/:id/delete', user_controller.requiresLogin, user_controller.user_delete_get);
