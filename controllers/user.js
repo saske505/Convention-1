@@ -9,8 +9,6 @@ var { sanitizeBody } = require('express-validator/filter');
 
 // this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
-    console.log(req.session);
-    
     if (req.session && req.session.userId) {
         return next();
     } else {
@@ -104,7 +102,7 @@ exports.user_signup_post =  [
                 } else {
                     req.session.userId = user._id;
                     // user saved, redirect to user detail page
-                   res.render('user_detail', {title: 'User', user: user, session: req.session});
+                   res.redirect(user.url);
                 }
             });
         }
@@ -147,8 +145,11 @@ exports.user_login_post =  [
                     res.render('user_login', {title: 'Log In', authFail: 'Unable to log in with username/password.'});
                 } else {
                     req.session.userId = user._id;
-
-                    res.render('user_detail', {title: 'User', user: user, session: req.session});
+                    
+                    req.session.save(function(err) {
+                        // session saved
+                        res.redirect(user.url);
+                    });
                 }
             });
         }
@@ -164,7 +165,7 @@ exports.user_logout_get = function(req, res, next) {
             if(err) {
                 return next(err);
             } else {
-                return res.redirect('/');
+                return res.redirect('/user/login');
             }
         });
     }
