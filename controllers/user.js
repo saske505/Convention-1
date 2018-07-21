@@ -139,7 +139,7 @@ exports.user_login_post =  [
         
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
-            
+            console.log(req.username);
             res.render('user_login', {title: 'Log In', errors: errors.array()});
         } else {
             User.authenticate(req.body.username, req.body.password, function (error, user) {

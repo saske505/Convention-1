@@ -5,12 +5,14 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
     meta(name="description" content="")
     meta(name="author" content="")
-    link(rel="icon" href="../../../../favicon.ico")
-    title Starter Template for Bootstrap
-    // Bootstrap core CSS
-    link(href="/stylesheets/bootstrap.min.css" rel="stylesheet")
-    // Custom styles for this template
-    link(href="/stylesheets/starter-template.css" rel="stylesheet")
+    link(rel="icon" href="/images/favicon.ico")
+    title #{title}
+    // Bootstrap CSS
+    link(href="/stylesheets/bootstrap.css" rel="stylesheet")
+    link(href="/stylesheets/style.css" rel="stylesheet")    
+
+    block stylesheets
+    // Custom stylesheets
   body
     nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
       a.navbar-brand(href="#") Convention
