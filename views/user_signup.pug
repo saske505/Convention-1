@@ -1,21 +1,28 @@
 extends layout
 
+block title
+  title Sign Up
+
+block stylesheets
+  link(href="/stylesheets/generic-form.css" rel="stylesheet")
+
 block content
-  h1 #{title}
+  main.container(role='main').text-center
+    form.generic-form(method='POST' action='')
+      img.mb-4(src="/images/bootstrap-solid.svg" alt="" width="72" height="72")
+      h1.h3.mb-3.font-weight-normal Sign Up
+      label.sr-only(for="username") Username
+      input#inputText.form-control(type="text" name="username" placeholder="Username" required="" autofocus="")
+      label.sr-only(for="email") Email
+      input#inputEmail.form-control(type="email" name="email" placeholder="Email Address" required="" autofocus="")
+      label.sr-only(for="password") Password
+      input#inputPassword.form-control(type="password" name="password" placeholder="Password" required="")
+      label.sr-only(for="passwordConf") Confirm Password
+      input#inputPasswordConf.form-control(type="password" name="passwordConf" placeholder="Confirm Password" required="")
+      button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign Up
+      p.mt-5.mb-3.text-muted © 2017-2018
 
-  form(method='POST' action='')
-    div.form-group
-      label(for='email') Email Address:
-      input#email.form-control(type='text', placeholder='Email' name='email' value=(user === undefined ? '' : user.email))
-      label(for='username') Username:
-      input#username.form-control(type='text', placeholder='Username' name='username' value=(user === undefined ? '' : user.username))
-      label(for='password') Password:
-      input#password.form-control(type='password', placeholder='Password' name='password' value=(user === undefined ? '' : user.password))
-      label(for='passwordConf') Confirm Password:
-      input#passwordConf.form-control(type='password', placeholder='Confirm Password' name='passwordConf' value=(user === undefined ? '' : user.passwordConf))
-    button.btn.btn-primary(type='submit') Sign Up
-
-  if errors 
-    ul
-      for error in errors
-        li!= error.msg
+    if errors 
+      ul.list-group
+        for error in errors
+          li.list-group-item!= error.msg

@@ -45,13 +45,13 @@ exports.user_detail = function(req, res, next) {
         }
         
         // successful, so render
-        res.render('user_detail', {title: 'User', user:  results.user});
+        res.render('user_detail', {user:  results.user});
     });
 };
 
 // display user create form on GET
 exports.user_signup_get = function(req, res, next) { 
-    res.render('user_signup', {title: 'Sign Up'});
+    res.render('user_signup');
 };
 
 // handle user create on POST
@@ -87,7 +87,7 @@ exports.user_signup_post =  [
         
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
-            res.render('user_signup', {title: 'Sign Up', errors: errors.array()});
+            res.render('user_signup', {errors: errors.array()});
         } else {
             // create a user object with escaped and trimmed data
             var userData = { 
@@ -112,7 +112,7 @@ exports.user_signup_post =  [
 //
 // display user create form on GET
 exports.user_login_get = function(req, res, next) { 
-    res.render('user_login', {title: 'Log In'});
+    res.render('user_login');
 };
 
 // handle user create on POST
@@ -138,11 +138,11 @@ exports.user_login_post =  [
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
             console.log(req.username);
-            res.render('user_login', {title: 'Log In', errors: errors.array()});
+            res.render('user_login', {errors: errors.array()});
         } else {
             User.authenticate(req.body.username, req.body.password, function (error, user) {
                 if (error || !user) {
-                    res.render('user_login', {title: 'Log In', authFail: 'Unable to log in with username/password.'});
+                    res.render('user_login', {authFail: 'Unable to log in with username/password.'});
                 } else {
                     req.session.userId = user._id;
                     
@@ -181,14 +181,14 @@ exports.user_delete_get = function(req, res, next) {
         if (err) { 
             return next(err);
         }
-        
+
         if (results.user === null) {
             // no results
             res.redirect('user/' + req.params.id);
         }
-        
+
         // successful, so render
-        res.render('user_delete', {title: 'Delete User', user: results.user});
+        res.render('user_delete', {user: results.user});
     });
 };
 
@@ -209,8 +209,14 @@ exports.user_delete_post = function(req, res, next) {
                 return next(err);
             }
             
-            // success
-            res.render('index');
+            // delete session object
+            req.session.destroy(function(err) {
+                if(err) {
+                    return next(err);
+                } else {
+                    return res.redirect('/user/login');
+                }
+            });
         });
     });
 };
@@ -237,7 +243,7 @@ exports.user_update_get = function(req, res, next) {
         }
 
         // success
-        res.render('user_update', {title: 'Update User', user: results.user});
+        res.render('user_update', {user: results.user});
     });
 };
 
@@ -268,7 +274,7 @@ exports.user_update_post = [
     
         if (!errors.isEmpty()) {
             // there are errors, render form again with sanitized values/error messages
-            res.render('user_update', { title: 'Update User', user: oldUser, errors: errors.array() });
+            res.render('user_update', {user: oldUser, errors: errors.array()});
             
             return;
         }

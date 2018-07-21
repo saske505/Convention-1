@@ -3,19 +3,22 @@ html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
-    meta(name="description" content="")
-    meta(name="author" content="")
+    meta(name="description" content="Convention")
+    meta(name="author" content="Stephan Kroukamp")
+    
     link(rel="icon" href="/images/favicon.ico")
-    title #{title}
+    
+    block title
+    
     // Bootstrap CSS
     link(href="/stylesheets/bootstrap.css" rel="stylesheet")
-    link(href="/stylesheets/style.css" rel="stylesheet")    
-
+    link(href="/stylesheets/style.css" rel="stylesheet")
+    
     block stylesheets
     // Custom stylesheets
   body
     nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
-      a.navbar-brand(href="#") Convention
+      a.navbar-brand(href="/") Convention
       button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation")
         span.navbar-toggler-icon
       #navbarsExampleDefault.collapse.navbar-collapse
@@ -32,11 +35,9 @@ html(lang="en")
               a.nav-link(href='/user/signup') Sign Up
             li.nav-item 
               a.nav-link(href='/user/login') Log In
-    main.container(role="main")
-      block content
+    block content
 script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
 script.
   window.jQuery || document.write('<script src="/javascripts/jquery-slim.min.js"><\\/script>');
 script(src="/javascripts/popper.min.js")
-script(src="/javascripts/bootstrap.min.js")
-                
+script(src="/javascripts/bootstrap.min.js")                

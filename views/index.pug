@@ -1,9 +1,16 @@
 extends layout
 
+block title
+  title Home
+
 block content
-  h1= title
-    p Welcome to the Convention site
-    if session && session.userId
-      p you are logged in
-    else
-      p you are logged out
+  main.container(role='main').text-center
+    .homepage
+      h1 Bootstrap starter template
+      
+      if session && session.userId
+        p.lead
+          | Logged In.
+      else
+        p.lead
+          | Logged Out.

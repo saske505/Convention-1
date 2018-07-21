@@ -1,17 +1,23 @@
 extends layout
 
+block title
+  title Update User
+
+block stylesheets
+  link(href="/stylesheets/generic-form.css" rel="stylesheet")
+
 block content
-  h1 #{title}
+  main.container(role='main').text-center
+    h1.h3.mb-3.font-weight-normal Update User
+    form.generic-form(method='POST' action='')
+      label.sr-only(for="username") Username
+      input#inputText.form-control(type="text" name="username" value=(user === undefined ? '' : user.username) placeholder="Username" required="" autofocus="")
+      label.sr-only(for="email") Email
+      input#inputEmail.form-control(type="email" name="email" value=(user === undefined ? '' : user.email) placeholder="Email Address" required="" autofocus="")
 
-  form(method='POST' action='')
-    div.form-group
-      label(for='email') Email Address:
-      input#email.form-control(type='text', placeholder='Email' name='email' value=(user === undefined ? '' : user.email))
-      label(for='username') Username:
-      input#username.form-control(type='text', placeholder='Username' name='username' value=(user === undefined ? '' : user.username))
-    button.btn.btn-primary(type='submit') Update User
-
-  if errors 
-    ul
-      for error in errors
-        li!= error.msg
+      button.btn.btn-lg.btn-primary.btn-block(type="submit") Update User
+      
+    if errors 
+      ul
+        for error in errors
+          li!= error.msg

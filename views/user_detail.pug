@@ -1,12 +1,14 @@
 extends layout
 
+block title
+  title User Detail
+
 block content
-  h1 #{title}: #{user.username}
-  
-  p #[strong Email:] #{user.email}
-  
-  div(style='margin-left:20px;margin-top:20px')
-    p
-      a(href=user.url+'/delete') Delete user
-    p
-      a(href=user.url+'/update') Update user
+  main.container(role='main').text-center
+    h1 User: #{user.username}
+    p #[strong Email:] #{user.email}
+    div(style='margin-left:20px;margin-top:20px')
+      p
+        a(href=user.url+'/delete') Delete user
+      p
+        a(href=user.url+'/update') Update user
