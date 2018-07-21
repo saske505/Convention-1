@@ -8,6 +8,11 @@ var mongoose = require('mongoose');
 var expressValidator = require('express-validator');
 var session = require('express-session');
 
+//jshint
+//express-mailer
+//chalk
+//moment
+
 require('pug');
 
 // require routes
