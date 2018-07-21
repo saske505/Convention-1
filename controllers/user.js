@@ -104,7 +104,7 @@ exports.user_signup_post =  [
                 } else {
                     req.session.userId = user._id;
                     // user saved, redirect to user detail page
-                    res.redirect(user.url);
+                   res.render('user_detail', {title: 'User', user: user, session: req.session});
                 }
             });
         }
@@ -120,7 +120,7 @@ exports.user_login_get = function(req, res, next) {
 // handle user create on POST
 exports.user_login_post =  [
     // validate the user form
-    check('email', 'Email Address required')
+    check('username', 'Username required')
         .isLength({min: 1})
         .trim(),
     check("password", 'Password required')
@@ -129,7 +129,7 @@ exports.user_login_post =  [
         .trim(),
     
     // sanitize the form's fields
-    sanitizeBody('email').trim().escape(),
+    sanitizeBody('username').trim().escape(),
     sanitizeBody('password').trim().escape(),
 
     // process request after validation and sanitization
@@ -142,13 +142,13 @@ exports.user_login_post =  [
             
             res.render('user_login', {title: 'Log In', errors: errors.array()});
         } else {
-            User.authenticate(req.body.email, req.body.password, function (error, user) {
+            User.authenticate(req.body.username, req.body.password, function (error, user) {
                 if (error || !user) {
-                    res.render('user_login', {title: 'Log In', authFail: 'Unable to log in with email/password.'});
+                    res.render('user_login', {title: 'Log In', authFail: 'Unable to log in with username/password.'});
                 } else {
                     req.session.userId = user._id;
 
-                    res.render('user_login', {title: 'Log In', session: req.session});
+                    res.render('user_detail', {title: 'Log In', user: user, session: req.session});
                 }
             });
         }
