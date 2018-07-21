@@ -4,6 +4,9 @@ var router = express.Router();
 // require user controller 
 var user_controller = require('../controllers/user');
 
+// # redirect to home page 
+//
+
 // GET request for creating a user
 router.get('/signup', user_controller.user_signup_get);
 

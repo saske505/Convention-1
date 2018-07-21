@@ -1,27 +1,40 @@
 doctype html
-html(lang='en')
+html(lang="en")
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(name="description" content="")
+    meta(name="author" content="")
+    link(rel="icon" href="../../../../favicon.ico")
+    title Starter Template for Bootstrap
+    // Bootstrap core CSS
+    link(href="/stylesheets/bootstrap.min.css" rel="stylesheet")
+    // Custom styles for this template
+    link(href="/stylesheets/starter-template.css" rel="stylesheet")
   body
-    div(class='container-fluid')
-      div(class='row')
-        div(class='col-sm-2')
-          block sidebar
-            ul(class='sidebar-nav')
-              li 
-                a(href='/') Home
-              if session && session.userId
-                li 
-                  a(href='/user/logout') Log Out
-              else
-                li 
-                  a(href='/user/signup') Sign Up
-                li 
-                  a(href='/user/login') Log In
-        div(class='col-sm-10')
-          block content
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+      a.navbar-brand(href="#") Convention
+      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href="/")
+              | Home 
+              span.sr-only (current)
+          if session && session.userId
+            li.nav-item
+              a.nav-link(href="user/logout") Logout
+          else
+            li.nav-item 
+              a.nav-link(href='/user/signup') Sign Up
+            li.nav-item 
+              a.nav-link(href='/user/login') Log In
+    main.container(role="main")
+      block content
+script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
+script.
+  window.jQuery || document.write('<script src="/javascripts/jquery-slim.min.js"><\\/script>');
+script(src="/javascripts/popper.min.js")
+script(src="/javascripts/bootstrap.min.js")
+                
