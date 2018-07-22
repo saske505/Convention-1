@@ -289,6 +289,9 @@ exports.user_update_post = [
                     return next(err);
                 }
                 
+                // update the session with the new user object
+                req.session.user = user;
+                
                 // successful
                 res.redirect(theuser.url);
             });

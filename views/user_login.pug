@@ -20,8 +20,9 @@ block content
           input(type="checkbox" value="remember-me")
           |  Remember me
       button.btn.btn-lg.btn-primary.btn-block(type="submit") Log In
-      p.mt-5.mb-3.text-muted © 2017-2018
-
+      
+    form(action='/user/signup')
+            button.btn.btn-lg.btn-primary(type="submit") Dont have an account yet?, Sign Up
     if errors 
       ul.list-group
         for error in errors
