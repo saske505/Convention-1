@@ -9,7 +9,7 @@ var { sanitizeBody } = require('express-validator/filter');
 
 // this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
-    if (req.session && req.session.userId) {
+    if (req.session && req.session.user) {
         return next();
     } else {
         var err = new Error('You must be logged in to view this page.');
@@ -100,7 +100,7 @@ exports.user_signup_post =  [
                 if (err) {
                     return next(err);
                 } else {
-                    req.session.userId = user._id;
+                    req.session.user = user;
                     // user saved, redirect to user detail page
                    res.redirect(user.url);
                 }
@@ -137,18 +137,16 @@ exports.user_login_post =  [
         
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
-            console.log(req.username);
             res.render('user_login', {errors: errors.array()});
         } else {
             User.authenticate(req.body.username, req.body.password, function (error, user) {
                 if (error || !user) {
                     res.render('user_login', {authFail: 'Unable to log in with username/password.'});
                 } else {
-                    req.session.userId = user._id;
-                    
+                    req.session.user = user;
                     req.session.save(function(err) {
                         // session saved
-                        res.redirect(user.url);
+                        res.render('user_detail');
                     });
                 }
             });

@@ -4,12 +4,12 @@ var router = express.Router();
     
 // redirect '/' to index
 router.get('/', function(req, res, next) {
-    res.render('index', {session: req.session});
+    res.render('index');
 });
 
 // GET home page
 router.get('/index', function(req, res, next) {
-    res.render('index', {session: req.session});
+    res.render('index');
 });
 
 module.exports = router;

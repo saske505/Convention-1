@@ -23,18 +23,16 @@ html(lang="en")
         span.navbar-toggler-icon
       #navbarsExampleDefault.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          li.nav-item.active
-            a.nav-link(href="/")
-              | Home 
-              span.sr-only (current)
-          if session && session.userId
-            li.nav-item
-              a.nav-link(href="/user/logout") Logout
-          else
-            li.nav-item 
-              a.nav-link(href='/user/signup') Sign Up
-            li.nav-item 
-              a.nav-link(href='/user/login') Log In
+          if session && session.user
+            li.nav-item.dropdown
+              a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                | Welcome, #{session.user.username}
+              .dropdown-menu(aria-labelledby="navbarDropdown")
+                a.dropdown-item(href='/user/' + session.user._id + '') Details
+                a.dropdown-item(href='/user/' + session.user._id + '/delete') Delete
+                a.dropdown-item(href='/user/' + session.user._id + '/update') Update
+                .dropdown-divider
+                a.dropdown-item(href="/user/logout") Logout
     block content
 script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
 script.
