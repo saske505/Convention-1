@@ -1,12 +1,20 @@
 extends layout
 
 block title
-  title User Detail
+  title Bookings
 
 block content
   main.container(role='main').text-center
     for booking in bookings
-      h1 Booking: #{booking.name}
-      p #[strong Price:] #{booking.price}
-      p #[strong Quantity:] #{booking.quantity}
-      div(style='margin-left:20px;margin-top:20px')
+      .card-deck.mb-3.text-center
+      .card.mb-4.box-shadow
+        .card-header
+          h4.my-0.font-weight-normal #{booking.name}
+        .card-body
+          h1.card-title.pricing-card-title
+            | #{booking.price}
+          ul.list-unstyled.mt-3.mb-4
+            li #{booking.quantity}
+          form(method='POST')
+            input#inputText.form-control(type='hidden' name='bookingID' value=booking._id)
+            button.btn.btn-lg.btn-block.btn-outline-primary(type='submit') More Details

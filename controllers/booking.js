@@ -1,17 +1,46 @@
 // require booking model
 var Booking = require('../models/booking');
 
+// this method ensures users have to be logged in to access the pages
+exports.requiresLogin = function (req, res, next) {
+    if (req.session && req.session.user) {
+        return next();
+    } else {
+        var err = new Error('You must be logged in to view this page.');
+        
+        err.status = 401;
+        
+        return next(err);
+    }
+};
+
 // redirects th booking to the home page
 exports.index = function (req, res) {   
     res.redirect('/');
 };
 
 // display all bookings
-exports.booking = function(req, res, next) {
+exports.bookings = function(req, res, next) {
     Booking.find({}, 'name price quantity')
-        .exec(function (err, bookings) {
-            if (err) { return next(err); }
+    .exec(function (err, bookings) {
+        if (err) {
+            return next(err);
+        } else {
+           //Successful, so render
+            res.render('bookings', {bookings: bookings}); 
+        }
+    });
+};
+
+// place order on booking
+exports.booking = function(req, res, next) {
+    Booking.findById(req.body.bookingID)
+    .exec(function (err, booking) {
+        if (err) { 
+            return next(err);
+        } else {
             //Successful, so render
-            res.render('bookings', {bookings: bookings});
-        });
+            res.render('booking', {booking: booking});
+        }
+    });
 };

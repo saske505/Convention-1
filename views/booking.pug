@@ -1,0 +1,11 @@
+extends layout
+
+block title
+  title Booking Detail
+
+block content
+  main.container(role='main').text-center
+    h1 Name: #{booking.name}
+    p #[strong Price:] #{booking.price}
+    p #[strong Quantity:] #{booking.quantity}
+    div(style='margin-left:20px;margin-top:20px')

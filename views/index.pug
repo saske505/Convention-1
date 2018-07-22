@@ -11,10 +11,3 @@ block content
       if session && session.user
         p.lead
           | You are currently logged in!
-      else
-        p.lead
-          form(action='/user/login')
-            button.btn.btn-lg.btn-primary(type="submit") Log In
-        p.lead
-          form(action='/user/signup')
-            button.btn.btn-lg.btn-primary(type="submit") Sign Up

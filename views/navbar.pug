@@ -17,3 +17,8 @@ nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
             a.dropdown-item(href='/user/' + session.user._id + '/changepassword') Change Password
             .dropdown-divider
             a.dropdown-item(href="/user/logout") Logout
+      else 
+        li.nav-item
+          a.nav-link(href='/user/login') Log In
+        li.nav-item
+          a.nav-link(href='/user/signup') Sign Up
