@@ -7,7 +7,7 @@ var booking_controller = require('../controllers/booking');
 // GET request to view all bookings
 router.get('/', booking_controller.bookings);
 
-// POST request to book
-router.post('/', booking_controller.booking);
+// GET request to booking
+router.get('/:id', booking_controller.booking);
 
 module.exports = router;

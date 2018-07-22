@@ -15,6 +15,4 @@ block content
             | #{booking.price}
           ul.list-unstyled.mt-3.mb-4
             li #{booking.quantity}
-          form(method='POST')
-            input#inputText.form-control(type='hidden' name='bookingID' value=booking._id)
-            button.btn.btn-lg.btn-block.btn-outline-primary(type='submit') More Details
+          a(href=booking.url) More Details

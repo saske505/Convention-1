@@ -43,10 +43,10 @@ exports.user = function(req, res, next) {
             err.status = 404;
             
             return next(err);
+        } else {
+            // successful, so render
+            res.render('user', {user: results.user});
         }
-        
-        // successful, so render
-        res.render('user', {user:  results.user});
     });
 };
 

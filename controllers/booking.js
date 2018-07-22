@@ -32,9 +32,9 @@ exports.bookings = function(req, res, next) {
     });
 };
 
-// place order on booking
+// display detail of a booking
 exports.booking = function(req, res, next) {
-    Booking.findById(req.body.bookingID)
+    Booking.findById(req.params.id)
     .exec(function (err, booking) {
         if (err) { 
             return next(err);
