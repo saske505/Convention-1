@@ -8,6 +8,9 @@ block content
     .homepage
       h1 Welcome to the Convention site.
       
-      if session && session.user
+      if session && session.userid
         p.lead
-          | You are currently logged in!
+          | Welcome, you are logged in
+      else
+        p.lead
+          | Welcome, you are not logged in

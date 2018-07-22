@@ -10,7 +10,7 @@ var { sanitizeBody } = require('express-validator/filter');
 
 // this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
-    if (req.session && req.session.user) {
+    if (req.session && req.session.userid) {
         return next();
     } else {
         var err = new Error('You must be logged in to view this page.');
@@ -101,9 +101,9 @@ exports.signup_post =  [
                 if (err) {
                     return next(err);
                 } else {
-                    req.session.user = user;
-                    // user saved, redirect to user detail page
-                   res.redirect(user.url);
+                    req.session.userid = user._id;
+                    
+                   res.render('user', {user: user});
                 }
             });
         }
@@ -144,10 +144,11 @@ exports.login_post =  [
                 if (error || !user) {
                     res.render('login', {authFail: 'Unable to log in with username/password.'});
                 } else {
-                    req.session.user = user;
+                    req.session.userid = user._id;
+                    
                     req.session.save(function(err) {
                         // session saved
-                        res.render('user');
+                        res.render('user', {user: user});
                     });
                 }
             });
@@ -242,7 +243,7 @@ exports.user_update_get = function(req, res, next) {
         }
 
         // success
-        res.render('user_update');
+        res.render('user_update', {user: results.user});
     });
 };
 
@@ -286,10 +287,10 @@ exports.user_update_post = [
                     return next(err);
                 } else {
                     // update the session with the updated user object
-                    req.session.user = user;
+                    req.session.userid = user._id;
 
                     // successful
-                    res.render('user');
+                    res.render('user', {user: user});
                 }
             });
         }
@@ -363,14 +364,13 @@ exports.user_changepassword_post = [
                     _id:req.params.id
                 });
 
-                User.findByIdAndUpdate(req.params.id, user, {}, function (err,theuser) {
+                User.findByIdAndUpdate(req.params.id, user, {}, function (err,updatedUser) {
                     if (err) {
                         return next(err);
                     } else {
                         // update the session with the updated user object
-                        req.session.user = theuser;
-
-                        res.render('user');
+                        req.session.userid = updatedUser._id;
+                        res.render('user', {user: updatedUser});
                     }
                 });
             });

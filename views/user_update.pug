@@ -11,9 +11,9 @@ block content
     h1.h3.mb-3.font-weight-normal Update User
     form.generic-form(method='POST' action='')
       label.sr-only(for="username") Username
-      input#inputText.form-control(type="text" name="username" value=(session.user === undefined ? '' : session.user.username) placeholder="Username" required="" autofocus="")
+      input#inputText.form-control(type="text" name="username" value=(user.username === undefined ? '' : user.username) placeholder="Username" required="" autofocus="")
       label.sr-only(for="email") Email
-      input#inputEmail.form-control(type="email" name="email" value=(session.user === undefined ? '' : session.user.email) placeholder="Email Address" required="" autofocus="")
+      input#inputEmail.form-control(type="email" name="email" value=(user.email === undefined ? '' : user.email) placeholder="Email Address" required="" autofocus="")
 
       button.btn.btn-lg.btn-primary.btn-block(type="submit") Update User
       

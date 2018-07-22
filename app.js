@@ -21,7 +21,7 @@ var userRouter = require('./routes/user');
 var bookingRouter = require('./routes/booking');
 
 // mongoDB Credentials
-var mongoUri = 'mongodb://admin:woopwoop1@ds137611.mlab.com:37611/convention';
+var mongoUri = 'mongodb://admin:woopwoop1@ds147451.mlab.com:47451/convention';
 
 // setup default mongoose connection 
 const options = {
