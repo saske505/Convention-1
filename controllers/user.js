@@ -266,14 +266,10 @@ exports.user_update_post = [
     (req, res, next) => {
         // extract the validation errors from a request
         var errors = validationResult(req);
-        
-        var oldUser = function(callback) {
-            User.findById(req.body.userid).exec(callback);
-        };
     
         if (!errors.isEmpty()) {
             // there are errors, render form again with sanitized values/error messages
-            res.render('user_update', {user: oldUser, errors: errors.array()});
+            res.render('user_update', {errors: errors.array()});
             
             return;
         }
@@ -285,16 +281,16 @@ exports.user_update_post = [
                 _id:req.params.id
             });
             
-            User.findByIdAndUpdate(req.params.id, user, {}, function (err,theuser) {
+            User.findByIdAndUpdate(req.params.id, user, {}, function (err) {
                 if (err) {
                     return next(err);
+                } else {
+                    // update the session with the updated user object
+                    req.session.user = user;
+
+                    // successful
+                    res.render('user_detail');
                 }
-                
-                // update the session with the new user object
-                req.session.user = user;
-                
-                // successful
-                res.redirect(theuser.url);
             });
         }
     }
@@ -351,7 +347,7 @@ exports.user_changepassword_post = [
     
         if (!errors.isEmpty()) {
             // there are errors, render form again with sanitized values/error messages
-            res.render('user_changepassword', {user: oldUser, errors: errors.array()});
+            res.render('user_changepassword', {errors: errors.array()});
             
             return;
         }
@@ -371,11 +367,10 @@ exports.user_changepassword_post = [
                     if (err) {
                         return next(err);
                     } else {
-                        // update the session with the new user object
+                        // update the session with the updated user object
                         req.session.user = theuser;
 
-                        // successful
-                        res.redirect(theuser.url);
+                        res.render('user_detail');
                     }
                 });
             });
