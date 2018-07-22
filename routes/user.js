@@ -31,6 +31,12 @@ router.get('/:id/update', user_controller.requiresLogin, user_controller.user_up
 // POST request for updating a user
 router.post('/:id/update', user_controller.requiresLogin, user_controller.user_update_post);
 
+// GET request to change a user's password
+router.get('/:id/changepassword', user_controller.requiresLogin, user_controller.user_changepassword_get);
+
+// POST request to change a user's password
+router.post('/:id/changepassword', user_controller.requiresLogin, user_controller.user_changepassword_post);
+
 // GET request for a user's details
 router.get('/:id', user_controller.requiresLogin, user_controller.user_detail);
 

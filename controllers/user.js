@@ -1,4 +1,5 @@
 var async = require('async');
+var bcrypt = require('bcrypt'); 
 
 // require user model
 var User = require('../models/user');
@@ -241,7 +242,7 @@ exports.user_update_get = function(req, res, next) {
         }
 
         // success
-        res.render('user_update', {user: results.user});
+        res.render('user_update');
     });
 };
 
@@ -294,6 +295,89 @@ exports.user_update_post = [
                 
                 // successful
                 res.redirect(theuser.url);
+            });
+        }
+    }
+];
+
+// display change password form on GET
+exports.user_changepassword_get = function(req, res, next) {
+    // get user for form
+    async.parallel({
+        user: function(callback) {
+            User.findById(req.params.id).exec(callback);
+        }
+    }, function(err, results) {
+        if (err) { 
+            return next(err);
+        }
+
+        if (results.user === null) { 
+            // no results
+            var err = new Error('User not found.');
+
+            err.status = 404;
+
+            return next(err);
+        }
+
+        // success
+        res.render('user_changepassword');
+    });
+};
+
+// handle user update on POST
+exports.user_changepassword_post = [
+    // validate the password form
+    check("password", 'Password required')
+        .isLength({min: 1})
+        .trim(),
+    check('passwordConf', 'Passwords do not match')
+        .isLength({min: 1})
+        .custom((value, { req }) => value === req.body.password),
+    
+    // sanitize the form's fields
+    sanitizeBody('password').trim().escape(),
+    sanitizeBody('passwordConf').trim().escape(),
+
+    // process request after validation and sanitization
+    (req, res, next) => {
+        // extract the validation errors from a request
+        var errors = validationResult(req);
+        
+        var oldUser = function(callback) {
+            User.findById(req.body.userid).exec(callback);
+        };
+    
+        if (!errors.isEmpty()) {
+            // there are errors, render form again with sanitized values/error messages
+            res.render('user_changepassword', {user: oldUser, errors: errors.array()});
+            
+            return;
+        }
+        else {
+            bcrypt.hash(req.body.password, 10, function (err, hash) {
+                req.body.password = hash;
+                
+                // create a user object with escaped/trimmed data and old id
+                var user = new User({
+                    email: oldUser.email,
+                    username: oldUser.username,
+                    password: req.body.password,
+                    _id:req.params.id
+                });
+
+                User.findByIdAndUpdate(req.params.id, user, {}, function (err,theuser) {
+                    if (err) {
+                        return next(err);
+                    } else {
+                        // update the session with the new user object
+                        req.session.user = theuser;
+
+                        // successful
+                        res.redirect(theuser.url);
+                    }
+                });
             });
         }
     }
