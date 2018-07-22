@@ -5,16 +5,16 @@ var router = express.Router();
 var user_controller = require('../controllers/user');
 
 // GET request for creating a user
-router.get('/signup', user_controller.user_signup_get);
+router.get('/signup', user_controller.signup_get);
 
 // POST request for creating a user
-router.post('/signup', user_controller.user_signup_post);
+router.post('/signup', user_controller.signup_post);
 
 // GET request for logging in
-router.get('/login', user_controller.user_login_get);
+router.get('/login', user_controller.login_get);
 
 // POST request for logging in
-router.post('/login', user_controller.user_login_post);
+router.post('/login', user_controller.login_post);
 
 // GET request for logging out
 router.get('/logout', user_controller.user_logout_get);
@@ -38,6 +38,6 @@ router.get('/:id/changepassword', user_controller.requiresLogin, user_controller
 router.post('/:id/changepassword', user_controller.requiresLogin, user_controller.user_changepassword_post);
 
 // GET request for a user's details
-router.get('/:id', user_controller.requiresLogin, user_controller.user_detail);
+router.get('/:id', user_controller.requiresLogin, user_controller.user);
 
 module.exports = router;

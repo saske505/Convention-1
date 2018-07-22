@@ -27,7 +27,7 @@ exports.index = function (req, res) {
 };
 
 // display detail page for a specific user
-exports.user_detail = function(req, res, next) {
+exports.user = function(req, res, next) {
     async.parallel({
         user: function(callback) {
             User.findById(req.params.id)
@@ -46,17 +46,17 @@ exports.user_detail = function(req, res, next) {
         }
         
         // successful, so render
-        res.render('user_detail', {user:  results.user});
+        res.render('user', {user:  results.user});
     });
 };
 
 // display user create form on GET
-exports.user_signup_get = function(req, res, next) { 
-    res.render('user_signup');
+exports.signup_get = function(req, res, next) { 
+    res.render('signup');
 };
 
 // handle user create on POST
-exports.user_signup_post =  [
+exports.signup_post =  [
     // validate the user form
     check('email', 'Email Address required')
         .isLength({min: 1})
@@ -88,7 +88,7 @@ exports.user_signup_post =  [
         
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
-            res.render('user_signup', {errors: errors.array()});
+            res.render('signup', {errors: errors.array()});
         } else {
             // create a user object with escaped and trimmed data
             var userData = { 
@@ -112,12 +112,12 @@ exports.user_signup_post =  [
 
 //
 // display user create form on GET
-exports.user_login_get = function(req, res, next) { 
-    res.render('user_login');
+exports.login_get = function(req, res, next) { 
+    res.render('login');
 };
 
 // handle user create on POST
-exports.user_login_post =  [
+exports.login_post =  [
     // validate the user form
     check('username', 'Username required')
         .isLength({min: 1})
@@ -138,16 +138,16 @@ exports.user_login_post =  [
         
         if (!errors.isEmpty()) {
             // There are errors, render the form again with sanitized values/error messages
-            res.render('user_login', {errors: errors.array()});
+            res.render('login', {errors: errors.array()});
         } else {
             User.authenticate(req.body.username, req.body.password, function (error, user) {
                 if (error || !user) {
-                    res.render('user_login', {authFail: 'Unable to log in with username/password.'});
+                    res.render('login', {authFail: 'Unable to log in with username/password.'});
                 } else {
                     req.session.user = user;
                     req.session.save(function(err) {
                         // session saved
-                        res.render('user_detail');
+                        res.render('user');
                     });
                 }
             });
@@ -289,7 +289,7 @@ exports.user_update_post = [
                     req.session.user = user;
 
                     // successful
-                    res.render('user_detail');
+                    res.render('user');
                 }
             });
         }
@@ -370,7 +370,7 @@ exports.user_changepassword_post = [
                         // update the session with the updated user object
                         req.session.user = theuser;
 
-                        res.render('user_detail');
+                        res.render('user');
                     }
                 });
             });
