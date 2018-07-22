@@ -1,0 +1,17 @@
+nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+  a.navbar-brand(href="/") Convention
+  button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation")
+    span.navbar-toggler-icon
+  #navbarsExampleDefault.collapse.navbar-collapse
+    ul.navbar-nav.mr-auto
+      if session && session.user
+        li.nav-item.dropdown
+          a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+            | Welcome, #{session.user.username}
+          .dropdown-menu(aria-labelledby="navbarDropdown")
+            a.dropdown-item(href='/user/' + session.user._id + '') Details
+            a.dropdown-item(href='/user/' + session.user._id + '/delete') Delete
+            a.dropdown-item(href='/user/' + session.user._id + '/update') Update
+            a.dropdown-item(href='/user/' + session.user._id + '/changepassword') Change Password
+            .dropdown-divider
+            a.dropdown-item(href="/user/logout") Logout

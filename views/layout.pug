@@ -10,33 +10,14 @@ html(lang="en")
     
     block title
     
-    // Bootstrap CSS
-    link(href="/stylesheets/bootstrap.css" rel="stylesheet")
-    link(href="/stylesheets/style.css" rel="stylesheet")
-    
+    include stylesheets.pug
+    include scripts.pug
+
     block stylesheets
     // Custom stylesheets
   body
-    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
-      a.navbar-brand(href="/") Convention
-      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation")
-        span.navbar-toggler-icon
-      #navbarsExampleDefault.collapse.navbar-collapse
-        ul.navbar-nav.mr-auto
-          if session && session.user
-            li.nav-item.dropdown
-              a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-                | Welcome, #{session.user.username}
-              .dropdown-menu(aria-labelledby="navbarDropdown")
-                a.dropdown-item(href='/user/' + session.user._id + '') Details
-                a.dropdown-item(href='/user/' + session.user._id + '/delete') Delete
-                a.dropdown-item(href='/user/' + session.user._id + '/update') Update
-                a.dropdown-item(href='/user/' + session.user._id + '/changepassword') Change Password
-                .dropdown-divider
-                a.dropdown-item(href="/user/logout") Logout
+    include navbar.pug
+    
     block content
-script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
-script.
-  window.jQuery || document.write('<script src="/javascripts/jquery-slim.min.js"><\\/script>');
-script(src="/javascripts/popper.min.js")
-script(src="/javascripts/bootstrap.min.js")                
+    
+    include footer.pug
