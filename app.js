@@ -18,6 +18,7 @@ require('pug');
 // require routes
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
+var bookingRouter = require('./routes/booking');
 
 // mongoDB Credentials
 var mongoUri = 'mongodb://admin:woopwoop1@ds137611.mlab.com:37611/convention';
@@ -81,6 +82,7 @@ app.use(function(req,res,next){
 // set routers
 app.use('/', indexRouter);
 app.use('/user', userRouter);
+app.use('/booking', bookingRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
