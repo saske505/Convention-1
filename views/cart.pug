@@ -5,9 +5,17 @@ block title
 
 block content
   main.container(role='main').text-center
-    h1 User: #{cart.user.username}
-    p #[strong Total:] #{cart.total}
+    h1 Contents
+    
+    hr
     
     for booking in cart.bookings
-      h1 Booking: #{booking.name}
-      p #[strong Price:] #{booking.price}
+      h2 Booking: #{booking.name}
+      h2 Price: #{booking.price}
+      
+      form(method='POST' action='/booking/' + booking._id + '/delete')
+        button.btn.btn-lg.btn-primary(type="submit") Remove
+        
+      hr
+      
+    h1 #[strong Total:] #{cart.total}

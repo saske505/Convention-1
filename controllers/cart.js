@@ -12,23 +12,23 @@ exports.requiresLogin = function(req, res, next) {
     }
 };
 
-exports.cart = function(req, res, next) {
-     Cart.findById(req.params.id)
-    .populate('user')
-    .populate('bookings')
-    .exec(function(err, cart) {
-        if (err) { 
-            return next(err);
-        } else {
-            if (cart === null) {
-                var err = new Error('Cart not found');
-                
-                err.status = 404;
-                
-                return next(err);
-            } else {
-                res.render('cart', {cart: cart});
-            }
-        }
-     });
+exports.cart_get = function(req, res, next) {
+    Cart.findById(req.params.id)
+   .populate('user')
+   .populate('bookings')
+   .exec(function(err, cart) {
+       if (err) { 
+           return next(err);
+       } else {
+           if (cart === null) {
+               var err = new Error('Cart not found');
+
+               err.status = 404;
+
+               return next(err);
+           } else {
+               res.render('cart', {cart: cart});
+           }
+       }
+    });
 };

@@ -17,7 +17,7 @@ exports.index = function(req, res) {
     res.redirect('/');
 };
 
-exports.bookings = function(req, res, next) {
+exports.bookings_get = function(req, res, next) {
     Booking.find({}, 'name price quantity')
     .exec(function(err, bookings) {
         if (err) {
@@ -28,7 +28,7 @@ exports.bookings = function(req, res, next) {
     });
 };
 
-exports.booking = function(req, res, next) {
+exports.booking_get = function(req, res, next) {
     Booking.findById(req.params.id)
     .exec(function(err, booking) {
         if (err) { 
@@ -39,13 +39,13 @@ exports.booking = function(req, res, next) {
     });
 };
 
-exports.book = function(req, res, next) {
+exports.book_post = function(req, res, next) {
     var bookingid = req.params.id;
     var cartid = req.session.cartid;
     
     Booking.findById(bookingid)
     .exec(function(err, booking) {
-        var bookingsToAdd = [
+        var bookingToAdd = [
             {
                 '_id': booking._id,
                 'name': booking.name,
@@ -54,7 +54,7 @@ exports.book = function(req, res, next) {
             }
         ];
         
-        Cart.update({_id: cartid}, {$push: {bookings: {$each: bookingsToAdd}}}, {}, function(err, result) {
+        Cart.update({_id: cartid}, {$push: {bookings: {$each: bookingToAdd}}}, {}, function(err, result) {
             if (err) {
                 return next(err);
             } else {
@@ -100,5 +100,46 @@ exports.book = function(req, res, next) {
                 });
             }
         });
+    });
+};
+
+exports.book_delete_post = function(req, res, next) {
+    var bookingid = req.params.id;
+    var cartid = req.session.cartid;
+    
+    Booking.findById(bookingid)
+    .exec(function(err, booking) {
+       if (err) {
+           return next(err);
+       } else {
+            booking.quantity = booking.quantity + 1;
+            
+            booking.save(function(err, updatedBooking) {
+                if (err) {
+                    return next(err);
+                } else {
+                    Cart.findById(cartid)
+                    .populate('user')
+                    .populate('booking')
+                    .exec(function(err, cart) {
+                        if (err) {
+                            return next(err);
+                        } else {
+                            cart.total = cart.total - booking.price;
+                            
+                            cart.bookings.remove(bookingid);
+                            
+                            cart.save(function(err, cart) {
+                                if (err) {
+                                    return next(err);
+                                } else {
+                                    res.render('index');
+                                }
+                            });
+                        }
+                    });     
+                }
+            });
+       }
     });
 };
