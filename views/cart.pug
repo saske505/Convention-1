@@ -1,0 +1,9 @@
+extends layout
+
+block title
+  title Cart
+
+block content
+  main.container(role='main').text-center
+    h1 User: #{cart.user.username}
+    p #[strong Total:] #{cart.total}

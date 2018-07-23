@@ -1,5 +1,8 @@
 var bcrypt = require('bcrypt');
+var mongoose = require('mongoose');
+
 var User = require('../models/user');
+var Cart = require('../models/cart');
 
 var {check, validationResult} = require('express-validator/check');
 var {sanitizeBody} = require('express-validator/filter');
@@ -72,9 +75,21 @@ exports.signup_post =  [
                 if (err) {
                     return next(err);
                 } else {
-                    req.session.userid = user._id;
+                    var cartData = {
+                        user: user,
+                        total: 0
+                    }
                     
-                   res.render('user', {user: user});
+                    Cart.create(cartData, function (err, cart) {
+                        if (err) {
+                            return next(err);
+                        } else {
+                            req.session.userid = user._id;
+                            req.session.cartid = cart._id;
+                            
+                            res.render('user', {user: user});
+                        }
+                    });
                 }
             });
         }
@@ -107,10 +122,16 @@ exports.login_post =  [
                 if (error || !user) {
                     res.render('login', {authFail: 'Unable to log in with username/password.'});
                 } else {
-                    req.session.userid = user._id;
-                    
-                    req.session.save(function(err) {
-                        res.render('user', {user: user});
+                    Cart.findOne({user: user})
+                    .exec(function(err, cart) {
+                        if (err) {
+                            return next(err);
+                        } else {
+                            req.session.userid = user._id;
+                            req.session.cartid = cart._id;
+                            
+                            res.render('user', {user: user});
+                        }
                     });
                 }
             });
