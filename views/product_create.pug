@@ -1,0 +1,37 @@
+extends layout
+
+block title
+  title Create Product
+
+block stylesheets
+  link(href="/stylesheets/generic-form.css" rel="stylesheet")
+
+block content
+  main.container(role='main').text-center
+    form.generic-form(method='POST')
+      img.mb-4(src="/images/brackets.svg" alt="" width="72" height="72")
+
+      h1.h3.mb-3.font-weight-normal Create Product
+      
+      label.sr-only(for="name") Name
+      input#inputText.form-control(type="text" name="name" placeholder="Name" required="" autofocus="")
+      
+      label.sr-only(for="sku") Sku
+      input#inputText.form-control(type="text" name="sku" placeholder="SKU" required="")
+      
+      label.sr-only(for="cost_price") Cost Price
+      input#inputText.form-control(type="text" name="cost_price" placeholder="Cost Price" required="")
+      
+      label.sr-only(for="selling_price") Selling Price
+      input#inputText.form-control(type="text" name="selling_price" placeholder="Selling Price" required="")
+      
+      label.sr-only(for="items_in_stock") Items in Stock
+      input#inputText.form-control(type="text" name="items_in_stock" placeholder="Items in Stock" required="")
+
+      button.btn.btn-lg.btn-primary.btn-block(type="submit") Create
+
+    if errors 
+      ul.list-group
+        for error in errors
+          li.list-group-item!= error.msg
+

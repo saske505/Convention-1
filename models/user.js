@@ -56,12 +56,10 @@ UserSchema.pre('save', function(next) {
     });
 });
 
-// virtual for User's URL
 UserSchema.virtual('url').get(function() {
     return '/user/' + this._id;
 });
 
 var User = mongoose.model('User', UserSchema);
 
-// export user Model
 module.exports = User;

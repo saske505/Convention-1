@@ -1,0 +1,18 @@
+extends layout
+
+block title
+  title Product
+
+block content
+  main.container(role='main').text-center
+    .card-deck.mb-3.text-center
+    .card.mb-4.box-shadow
+      .card-header
+        h4.my-0.font-weight-normal #{product.name}
+      .card-body
+        h1.card-title.pricing-card-title
+          | R#{product.selling_price}
+        ul.list-unstyled.mt-3.mb-4
+          li Available: #{product.items_in_stock}
+        a(href='/products/') Book Now!
+

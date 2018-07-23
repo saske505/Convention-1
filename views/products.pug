@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title Bookings
+  title Products
 
 block content
   main.container(role='main').text-center
@@ -12,7 +12,12 @@ block content
           h4.my-0.font-weight-normal #{product.name}
         .card-body
           h1.card-title.pricing-card-title
-            | #{product.price}
+            | R#{product.selling_price}
           ul.list-unstyled.mt-3.mb-4
-            li #{product.quantity}
-          a(href=product.url) More Details
+            li Available: #{product.items_in_stock}
+            li
+              a(href=product.url) More Details
+            li
+              a(href='/products/' + product._id + '/update') Update
+            li
+              a(href='/products/' + product._id + '/delete') Delete

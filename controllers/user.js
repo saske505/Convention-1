@@ -17,10 +17,6 @@ exports.requiresLogin = function(req, res, next) {
     }
 };
 
-exports.index = function(req, res) {   
-    res.redirect('/');
-};
-
 exports.user_get = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
@@ -118,7 +114,7 @@ exports.login_post =  [
 ];
 
 
-exports.user_logout_get = function(req, res, next) {
+exports.logout_get = function(req, res, next) {
     if (req.session) {
         req.session.destroy(function(err) {
             if (err) {
@@ -130,7 +126,7 @@ exports.user_logout_get = function(req, res, next) {
     }
 };
 
-exports.user_delete_get = function(req, res, next) {
+exports.delete_get = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) {
@@ -141,7 +137,7 @@ exports.user_delete_get = function(req, res, next) {
     });
 };
 
-exports.user_delete_post = function(req, res, next) {
+exports.delete_post = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) { 
@@ -164,7 +160,7 @@ exports.user_delete_post = function(req, res, next) {
     });
 };
 
-exports.user_update_get = function(req, res, next) {
+exports.update_get = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) { 
@@ -175,7 +171,7 @@ exports.user_update_get = function(req, res, next) {
     });
 };
 
-exports.user_update_post = [
+exports.update_post = [
     check('email', 'Email Address required')
         .isLength({min: 1})
         .trim(),
@@ -216,7 +212,7 @@ exports.user_update_post = [
     }
 ];
 
-exports.user_changepassword_get = function(req, res, next) {
+exports.changepassword_get = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) { 
@@ -227,7 +223,7 @@ exports.user_changepassword_get = function(req, res, next) {
     });
 };
 
-exports.user_changepassword_post = [
+exports.changepassword_post = [
     check("password", 'Password required')
         .isLength({min: 1})
         .trim(),

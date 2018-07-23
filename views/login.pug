@@ -10,19 +10,25 @@ block content
   main.container(role='main').text-center
     form.generic-form(method='POST')
       img.mb-4(src="/images/brackets.svg" alt="" width="72" height="72")
+      
       h1.h3.mb-3.font-weight-normal Log In
+      
       label.sr-only(for="username") Username
       input#inputText.form-control(type="text" name="username" placeholder="Username" required="" autofocus="")
+      
       label.sr-only(for="password") Password
       input#inputPassword.form-control(type="password" name="password" placeholder="Password" required="")
+      
       .checkbox.mb-3
         label
           input(type="checkbox" value="remember-me")
           |  Remember me
+          
       button.btn.btn-lg.btn-primary.btn-block(type="submit") Log In
       
     form(action='/user/signup')
-            button.btn.btn-lg.btn-primary(type="submit") Dont have an account yet?, Sign Up
+      button.btn.btn-lg.btn-primary(type="submit") Dont have an account yet?, Sign Up
+      
     if errors 
       ul.list-group
         for error in errors

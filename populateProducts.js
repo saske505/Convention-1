@@ -57,13 +57,13 @@ function createProducts(cb) {
     async.parallel(
     [
         function(callback) {
-            productCreate('2 Sleeper','ref1',1000,1500,10, callback);
+            productCreate('2 Sleeper', 'ref1', 1000, 1500, 10, callback);
         },
         function(callback) {
-            productCreate('3 Sleeper','ref2',800,1300,15, callback);
+            productCreate('3 Sleeper', 'ref2', 800, 1300, 15, callback);
         },
         function(callback) {
-            productCreate('5 Sleeper','ref3',500,1000,20, callback);
+            productCreate('5 Sleeper', 'ref3', 500, 1000, 20, callback);
         }
     ],cb
     );
@@ -76,12 +76,11 @@ async.series(
 // Optional callback
 function(err, results) {
     if (err) {
-        console.log('FINAL ERR: '+err);
+        console.log('FINAL ERR: ' + err);
     }
     else {
         console.log('Products: ' + products);
     }
 
-    // All done, disconnect from database
     mongoose.connection.close();
 });

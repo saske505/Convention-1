@@ -27,12 +27,10 @@ var ProductSchema = new mongoose.Schema({
     }
 });
 
-// virtual for Products's URL
 ProductSchema.virtual('url').get(function() {
-    return '/product/' + this._id;
+    return '/products/' + this._id;
 });
 
 var Product = mongoose.model('Product', ProductSchema);
 
-// export product Model
 module.exports = Product;

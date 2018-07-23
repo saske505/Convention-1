@@ -1,0 +1,18 @@
+extends layout
+
+block title
+  title Delete Product
+
+block content
+  main.container(role='main').text-center
+    h1 Delete: #{product.name}
+    
+    p Cost Price: #{product.cost_price}
+    p Selling Price: #{product.selling_price}
+    p In Stock: #{product.items_in_stock}
+    
+    p Do you really want to delete this Product?
+
+    form(method='POST')
+      div.form-group
+      button.btn.btn-primary(type='submit') Delete
