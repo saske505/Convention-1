@@ -12,8 +12,6 @@ require('pug');
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
-var bookingRouter = require('./routes/booking');
-var cartRouter = require('./routes/cart');
 
 var mongoUri = 'mongodb://admin:woopwoop1@ds147451.mlab.com:47451/convention';
 
@@ -66,8 +64,6 @@ app.use(function(req,res,next){
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
-app.use('/booking', bookingRouter);
-app.use('/cart', cartRouter);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
