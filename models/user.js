@@ -20,8 +20,8 @@ var UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.statics.authenticate = function (username, password, callback) {
-    User.findOne({username: username}).exec(function (err, user) {
+UserSchema.statics.authenticate = function(username, password, callback) {
+    User.findOne({username: username}).exec(function(err, user) {
         if (err) {
           return callback(err);
         } else if (!user) {
@@ -31,7 +31,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
 
           return callback(err);
         } else {
-            bcrypt.compare(password, user.password, function (err, result) {
+            bcrypt.compare(password, user.password, function(err, result) {
                 if (result === true) {
                     return callback(null, user);
                 } else {
@@ -42,10 +42,10 @@ UserSchema.statics.authenticate = function (username, password, callback) {
     });
 };
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
     var user = this;
   
-    bcrypt.hash(user.password, 10, function (err, hash) {
+    bcrypt.hash(user.password, 10, function(err, hash) {
         if (err) {
           return next(err);
         } else {
@@ -57,7 +57,7 @@ UserSchema.pre('save', function (next) {
 });
 
 // virtual for User's URL
-UserSchema.virtual('url').get(function () {
+UserSchema.virtual('url').get(function() {
     return '/user/' + this._id;
 });
 

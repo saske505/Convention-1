@@ -11,12 +11,12 @@ var CartSchema = new mongoose.Schema({
         ref: 'Booking'
     }],
     total: {
-        type: String,
+        type: Number,
         required: true
     }
 });
 
-CartSchema.virtual('url').get(function () {
+CartSchema.virtual('url').get(function() {
     return '/cart/' + this._id;
 });
 

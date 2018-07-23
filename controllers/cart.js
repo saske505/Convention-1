@@ -1,7 +1,6 @@
 var Cart = require('../models/cart');
-var User = require('../models/user');
 
-exports.requiresLogin = function (req, res, next) {
+exports.requiresLogin = function(req, res, next) {
     if (req.session && req.session.userid) {
         return next();
     } else {

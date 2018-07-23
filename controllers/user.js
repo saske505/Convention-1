@@ -1,5 +1,4 @@
 var bcrypt = require('bcrypt');
-var mongoose = require('mongoose');
 
 var User = require('../models/user');
 var Cart = require('../models/cart');
@@ -7,7 +6,7 @@ var Cart = require('../models/cart');
 var {check, validationResult} = require('express-validator/check');
 var {sanitizeBody} = require('express-validator/filter');
 
-exports.requiresLogin = function (req, res, next) {
+exports.requiresLogin = function(req, res, next) {
     if (req.session && req.session.userid) {
         return next();
     } else {
@@ -19,7 +18,7 @@ exports.requiresLogin = function (req, res, next) {
     }
 };
 
-exports.index = function (req, res) {   
+exports.index = function(req, res) {   
     res.redirect('/');
 };
 
@@ -71,7 +70,7 @@ exports.signup_post =  [
                 password: req.body.password
             };
 
-            User.create(userData, function (err, user) {
+            User.create(userData, function(err, user) {
                 if (err) {
                     return next(err);
                 } else {
@@ -80,7 +79,7 @@ exports.signup_post =  [
                         total: 0
                     }
                     
-                    Cart.create(cartData, function (err, cart) {
+                    Cart.create(cartData, function(err, cart) {
                         if (err) {
                             return next(err);
                         } else {
@@ -118,7 +117,7 @@ exports.login_post =  [
         if (!errors.isEmpty()) {
             res.render('login', {errors: errors.array()});
         } else {
-            User.authenticate(req.body.username, req.body.password, function (error, user) {
+            User.authenticate(req.body.username, req.body.password, function(error, user) {
                 if (error || !user) {
                     res.render('login', {authFail: 'Unable to log in with username/password.'});
                 } else {
@@ -143,7 +142,7 @@ exports.login_post =  [
 exports.user_logout_get = function(req, res, next) {
     if (req.session) {
         req.session.destroy(function(err) {
-            if(err) {
+            if (err) {
                 return next(err);
             } else {
                 return res.redirect('/user/login');
@@ -154,7 +153,7 @@ exports.user_logout_get = function(req, res, next) {
 
 exports.user_delete_get = function(req, res, next) {
     User.findById(req.params.id)
-    .exec(function (err, user) {
+    .exec(function(err, user) {
         if (err) {
             res.redirect('user/' + req.params.id);
         } else {
@@ -169,13 +168,13 @@ exports.user_delete_post = function(req, res, next) {
         if (err) { 
             return next(err);
         } else {
-            User.findByIdAndRemove(req.params.id, function (err) {
+            User.findByIdAndRemove(req.params.id, function(err) {
                 if (err) {
                     return next(err);
                 }
 
                 req.session.destroy(function(err) {
-                    if(err) {
+                    if (err) {
                         return next(err);
                     } else {
                         return res.redirect('/user/login');
@@ -225,7 +224,7 @@ exports.user_update_post = [
                 _id:req.params.id
             });
             
-            User.findByIdAndUpdate(req.params.id, user, {}, function (err) {
+            User.findByIdAndUpdate(req.params.id, user, {}, function(err) {
                 if (err) {
                     return next(err);
                 } else {
@@ -274,7 +273,7 @@ exports.user_changepassword_post = [
                 if (err) {
                     return next(err);
                 } else {
-                    bcrypt.hash(req.body.password, 10, function (err, hash) {
+                    bcrypt.hash(req.body.password, 10, function(err, hash) {
                         if (err) {
                             return next(err);
                         } else {
@@ -287,7 +286,7 @@ exports.user_changepassword_post = [
                                 _id:req.params.id
                             });
 
-                            User.findByIdAndUpdate(req.params.id, user, {}, function (err,updatedUser) {
+                            User.findByIdAndUpdate(req.params.id, user, {}, function(err,updatedUser) {
                                 if (err) {
                                     return next(err);
                                 } else {

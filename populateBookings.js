@@ -36,7 +36,7 @@ function bookingCreate(name, price, quantity, cb) {
     
     var booking = new Booking(bookingDetail);  
   
-    booking.save(function (err) {
+    booking.save(function(err) {
         if (err) {
           cb(err, null);
 
@@ -55,10 +55,10 @@ function createBookings(cb) {
     async.parallel(
         [
             function(callback) {
-                bookingCreate('2 Sleeper','1500','10', callback);
+                bookingCreate('2 Sleeper', '1500', 10, callback);
             },
             function(callback) {
-                bookingCreate('3 Sleeper','1200','20', callback);
+                bookingCreate('3 Sleeper', '1200', 20 , callback);
             }
         ],cb
     );
@@ -71,7 +71,7 @@ async.series(
     // Optional callback
     function(err, results) {
         if (err) {
-            console.log('FINAL ERR: '+err);
+            console.log('FINAL ERR: ' + err);
         }
         else {
             console.log('bookings: ' + bookings);

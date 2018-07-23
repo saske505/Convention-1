@@ -8,13 +8,12 @@ var BookingSchema = new mongoose.Schema({
         trim: true
     },
     price: {
-        type: String,
+        type: Number,
         unique: true,
-        required: true,
-        trim: true
+        required: true
     },
     quantity: {
-        type: String,
+        type: Number,
         required: true
     }
 });

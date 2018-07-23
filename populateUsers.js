@@ -39,7 +39,7 @@ function userCreate(firstName, lastName, userName, email, mobile, password, cb) 
     
     var user = new User(userDetail);  
   
-    user.save(function (err) {
+    user.save(function(err) {
         if (err) {
           cb(err, null);
 

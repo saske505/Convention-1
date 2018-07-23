@@ -1,8 +1,7 @@
 var Booking = require('../models/booking');
 var Cart = require('../models/cart');
-var User = require('../models/user');
 
-exports.requiresLogin = function (req, res, next) {
+exports.requiresLogin = function(req, res, next) {
     if (req.session && req.session.userid) {
         return next();
     } else {
@@ -14,13 +13,13 @@ exports.requiresLogin = function (req, res, next) {
     }
 };
 
-exports.index = function (req, res) {   
+exports.index = function(req, res) {   
     res.redirect('/');
 };
 
 exports.bookings = function(req, res, next) {
     Booking.find({}, 'name price quantity')
-    .exec(function (err, bookings) {
+    .exec(function(err, bookings) {
         if (err) {
             return next(err);
         } else {
@@ -31,7 +30,7 @@ exports.bookings = function(req, res, next) {
 
 exports.booking = function(req, res, next) {
     Booking.findById(req.params.id)
-    .exec(function (err, booking) {
+    .exec(function(err, booking) {
         if (err) { 
             return next(err);
         } else {
@@ -66,7 +65,37 @@ exports.book = function(req, res, next) {
                     if (err) {
                         return next(err);
                     } else {
-                        res.render('cart', {cart: cart});
+                        var recalculatedQuantity = booking.quantity - 1;
+                        
+                        var updatedBooking = {
+                            _id: booking._id,
+                            name: booking.name,
+                            price: booking.price,
+                            quantity: recalculatedQuantity
+                        };
+                        
+                        Booking.findByIdAndUpdate(bookingid, updatedBooking, {}, function(err) {
+                            if (err) {
+                                return next(err);
+                            } else {
+                                var recalculatedTotal = cart.total + booking.price;
+                        
+                                var updatedCart = {
+                                    _id: cart._id,
+                                    bookings: cart.bookings,
+                                    user: cart.user,
+                                    total: recalculatedTotal
+                                };
+
+                                Cart.findByIdAndUpdate(cartid, updatedCart, {}, function(err) {
+                                    if (err) {
+                                        return next(err);
+                                    } else {
+                                        res.render('cart', {cart: updatedCart});
+                                    }
+                                }); 
+                            }
+                        });
                     }
                 });
             }
