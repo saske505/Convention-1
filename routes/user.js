@@ -25,6 +25,6 @@ router.get('/:id/changepassword', user_controller.requiresLogin, user_controller
 
 router.post('/:id/changepassword', user_controller.requiresLogin, user_controller.user_changepassword_post);
 
-router.get('/:id', user_controller.requiresLogin, user_controller.user);
+router.get('/:id', user_controller.requiresLogin, user_controller.user_get);
 
 module.exports = router;

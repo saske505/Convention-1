@@ -21,7 +21,7 @@ exports.index = function(req, res) {
     res.redirect('/');
 };
 
-exports.user = function(req, res, next) {
+exports.user_get = function(req, res, next) {
     User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) {
