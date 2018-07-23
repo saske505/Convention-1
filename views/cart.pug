@@ -7,3 +7,7 @@ block content
   main.container(role='main').text-center
     h1 User: #{cart.user.username}
     p #[strong Total:] #{cart.total}
+    
+    for booking in cart.bookings
+      h1 Booking: #{booking.name}
+      p #[strong Price:] #{booking.price}

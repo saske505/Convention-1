@@ -8,3 +8,5 @@ block content
     h1 Name: #{booking.name}
     p #[strong Price:] #{booking.price}
     p #[strong Quantity:] #{booking.quantity}
+    form(method='POST' action='/booking/book/' + booking._id)
+      button.btn.btn-lg.btn-primary.btn-block(type="submit") Book Now!

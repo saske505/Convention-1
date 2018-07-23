@@ -16,6 +16,7 @@ exports.requiresLogin = function (req, res, next) {
 exports.cart = function(req, res, next) {
      Cart.findById(req.params.id)
     .populate('user')
+    .populate('bookings')
     .exec(function(err, cart) {
         if (err) { 
             return next(err);

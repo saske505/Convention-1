@@ -1,7 +1,7 @@
-// require booking model
 var Booking = require('../models/booking');
+var Cart = require('../models/cart');
+var User = require('../models/user');
 
-// this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
     if (req.session && req.session.userid) {
         return next();
@@ -37,5 +37,39 @@ exports.booking = function(req, res, next) {
         } else {
             res.render('booking', {booking: booking});
         }
+    });
+};
+
+exports.book = function(req, res, next) {
+    var bookingid = req.params.id;
+    var cartid = req.session.cartid;
+    
+    Booking.findById(bookingid)
+    .exec(function(err, booking) {
+        var bookingsToAdd = [
+            {
+                '_id': booking._id,
+                'name': booking.name,
+                'price': booking.price,
+                'quantity': booking.quantity
+            }
+        ];
+        
+        Cart.update({_id: cartid}, {$push: {bookings: {$each: bookingsToAdd}}}, {}, function(err, result) {
+            if (err) {
+                return next(err);
+            } else {
+                Cart.findById(cartid)
+                .populate('user')
+                .populate('bookings')
+                .exec(function(err, cart) {
+                    if (err) {
+                        return next(err);
+                    } else {
+                        res.render('cart', {cart: cart});
+                    }
+                });
+            }
+        });
     });
 };

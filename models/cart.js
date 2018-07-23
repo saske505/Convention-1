@@ -4,8 +4,12 @@ var CartSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref : 'User'
+        ref: 'User'
     },
+    bookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking'
+    }],
     total: {
         type: String,
         required: true
