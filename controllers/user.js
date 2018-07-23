@@ -1,3 +1,4 @@
+var bcrypt = require('bcrypt');
 var User = require('../models/user');
 
 var {check, validationResult} = require('express-validator/check');
@@ -142,12 +143,12 @@ exports.user_delete_get = function(req, res, next) {
 };
 
 exports.user_delete_post = function(req, res, next) {
-    User.findById(req.body.userid)
+    User.findById(req.params.id)
     .exec(function(err, user) {
         if (err) { 
             return next(err);
         } else {
-            User.findByIdAndRemove(req.body.userid, function (err) {
+            User.findByIdAndRemove(req.params.id, function (err) {
                 if (err) {
                     return next(err);
                 }

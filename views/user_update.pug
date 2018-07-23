@@ -9,7 +9,7 @@ block stylesheets
 block content
   main.container(role='main').text-center
     h1.h3.mb-3.font-weight-normal Update User
-    form.generic-form(method='POST' action='')
+    form.generic-form(method='POST')
       label.sr-only(for="username") Username
       input#inputText.form-control(type="text" name="username" value=(user.username === undefined ? '' : user.username) placeholder="Username" required="" autofocus="")
       label.sr-only(for="email") Email
