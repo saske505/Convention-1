@@ -1,14 +1,8 @@
-var async = require('async');
-var bcrypt = require('bcrypt'); 
-
-// require user model
 var User = require('../models/user');
 
-// require functions from express-validator
-var { check, validationResult } = require('express-validator/check');
-var { sanitizeBody } = require('express-validator/filter');
+var {check, validationResult} = require('express-validator/check');
+var {sanitizeBody} = require('express-validator/filter');
 
-// this method ensures users have to be logged in to access the pages
 exports.requiresLogin = function (req, res, next) {
     if (req.session && req.session.userid) {
         return next();
@@ -21,43 +15,26 @@ exports.requiresLogin = function (req, res, next) {
     }
 };
 
-// redirects th user to the home page
 exports.index = function (req, res) {   
     res.redirect('/');
 };
 
-// display detail page for a specific user
 exports.user = function(req, res, next) {
-    async.parallel({
-        user: function(callback) {
-            User.findById(req.params.id)
-              .exec(callback);
-        }
-    }, function(err, results) {
-        if (err) { 
-            return next(err);
-        }
-        if (results.user === null) { 
-            var err = new Error('User not found.');
-            
-            err.status = 404;
-            
+    User.findById(req.params.id)
+    .exec(function(err, user) {
+        if (err) {
             return next(err);
         } else {
-            // successful, so render
-            res.render('user', {user: results.user});
+            res.render('user', {user: user});
         }
     });
 };
 
-// display user create form on GET
 exports.signup_get = function(req, res, next) { 
     res.render('signup');
 };
 
-// handle user create on POST
 exports.signup_post =  [
-    // validate the user form
     check('email', 'Email Address required')
         .isLength({min: 1})
         .trim(),
@@ -73,24 +50,17 @@ exports.signup_post =  [
         .isLength({min: 1})
         .custom((value, { req }) => value === req.body.password),
     
-    // create some logic to ensure the passwords match
-    
-    // sanitize the form's fields
     sanitizeBody('email').trim().escape(),
     sanitizeBody('username').trim().escape(),
     sanitizeBody('password').trim().escape(),
     sanitizeBody('passwordConf').trim().escape(),
 
-    // process request after validation and sanitization
     (req, res, next) => {
-        // extract the validation errors from a request
         var errors = validationResult(req);
         
         if (!errors.isEmpty()) {
-            // There are errors, render the form again with sanitized values/error messages
             res.render('signup', {errors: errors.array()});
         } else {
-            // create a user object with escaped and trimmed data
             var userData = { 
                 email: req.body.email,
                 username: req.body.username,
@@ -110,15 +80,11 @@ exports.signup_post =  [
     }
 ];
 
-//
-// display user create form on GET
 exports.login_get = function(req, res, next) { 
     res.render('login');
 };
 
-// handle user create on POST
 exports.login_post =  [
-    // validate the user form
     check('username', 'Username required')
         .isLength({min: 1})
         .trim(),
@@ -127,17 +93,13 @@ exports.login_post =  [
         .isLength({min: 1})
         .trim(),
     
-    // sanitize the form's fields
     sanitizeBody('username').trim().escape(),
     sanitizeBody('password').trim().escape(),
 
-    // process request after validation and sanitization
     (req, res, next) => {
-        // extract the validation errors from a request
         var errors = validationResult(req);
         
         if (!errors.isEmpty()) {
-            // There are errors, render the form again with sanitized values/error messages
             res.render('login', {errors: errors.array()});
         } else {
             User.authenticate(req.body.username, req.body.password, function (error, user) {
@@ -147,7 +109,6 @@ exports.login_post =  [
                     req.session.userid = user._id;
                     
                     req.session.save(function(err) {
-                        // session saved
                         res.render('user', {user: user});
                     });
                 }
@@ -157,10 +118,8 @@ exports.login_post =  [
 ];
 
 
-// logout on GET
 exports.user_logout_get = function(req, res, next) {
     if (req.session) {
-        // delete session object
         req.session.destroy(function(err) {
             if(err) {
                 return next(err);
@@ -171,85 +130,52 @@ exports.user_logout_get = function(req, res, next) {
     }
 };
 
-// display user delete form on GET
 exports.user_delete_get = function(req, res, next) {
-    async.parallel({
-        user: function(callback) {
-            User.findById(req.params.id).exec(callback);
-        }
-    }, function(err, results) {
-        if (err) { 
-            return next(err);
-        }
-
-        if (results.user === null) {
-            // no results
+    User.findById(req.params.id)
+    .exec(function (err, user) {
+        if (err) {
             res.redirect('user/' + req.params.id);
+        } else {
+            res.render('user_delete', {user: user});
         }
-
-        // successful, so render
-        res.render('user_delete', {user: results.user});
     });
 };
 
-// handle user delete on POST
 exports.user_delete_post = function(req, res, next) {
-    async.parallel({
-        user: function(callback) {
-            User.findById(req.body.userid).exec(callback);
-        }
-    }, function(err, results) {
+    User.findById(req.body.userid)
+    .exec(function(err, user) {
         if (err) { 
             return next(err);
-        }
-        
-        // success
-        User.findByIdAndRemove(req.body.userid, function deleteUser(err) {
-            if (err) {
-                return next(err);
-            }
-            
-            // delete session object
-            req.session.destroy(function(err) {
-                if(err) {
+        } else {
+            User.findByIdAndRemove(req.body.userid, function (err) {
+                if (err) {
                     return next(err);
-                } else {
-                    return res.redirect('/user/login');
                 }
+
+                req.session.destroy(function(err) {
+                    if(err) {
+                        return next(err);
+                    } else {
+                        return res.redirect('/user/login');
+                    }
+                });
             });
-        });
+        }
     });
 };
 
-// display user update form on GET
 exports.user_update_get = function(req, res, next) {
-    // get user for form
-    async.parallel({
-        user: function(callback) {
-            User.findById(req.params.id).exec(callback);
-        }
-    }, function(err, results) {
+    User.findById(req.params.id)
+    .exec(function(err, user) {
         if (err) { 
             return next(err);
+        } else {
+            res.render('user_update', {user: user});
         }
-
-        if (results.user === null) { 
-            // no results
-            var err = new Error('User not found.');
-
-            err.status = 404;
-
-            return next(err);
-        }
-
-        // success
-        res.render('user_update', {user: results.user});
     });
 };
 
-// handle user update on POST
 exports.user_update_post = [
-    // validate the user form
     check('email', 'Email Address required')
         .isLength({min: 1})
         .trim(),
@@ -259,23 +185,18 @@ exports.user_update_post = [
         .isLength({min: 1})
         .trim(),
     
-    // sanitize the form's fields
     sanitizeBody('email').trim().escape(),
     sanitizeBody('username').trim().escape(),
 
-    // process request after validation and sanitization
     (req, res, next) => {
-        // extract the validation errors from a request
         var errors = validationResult(req);
     
         if (!errors.isEmpty()) {
-            // there are errors, render form again with sanitized values/error messages
             res.render('user_update', {errors: errors.array()});
             
             return;
         }
         else {
-            // create a user object with escaped/trimmed data and old id
             var user = new User({ 
                 email: req.body.email,
                 username: req.body.username,
@@ -286,10 +207,8 @@ exports.user_update_post = [
                 if (err) {
                     return next(err);
                 } else {
-                    // update the session with the updated user object
                     req.session.userid = user._id;
 
-                    // successful
                     res.render('user', {user: user});
                 }
             });
@@ -297,35 +216,18 @@ exports.user_update_post = [
     }
 ];
 
-// display change password form on GET
 exports.user_changepassword_get = function(req, res, next) {
-    // get user for form
-    async.parallel({
-        user: function(callback) {
-            User.findById(req.params.id).exec(callback);
-        }
-    }, function(err, results) {
+    User.findById(req.params.id)
+    .exec(function(err, user) {
         if (err) { 
             return next(err);
+        } else {
+            res.render('user_changepassword');
         }
-
-        if (results.user === null) { 
-            // no results
-            var err = new Error('User not found.');
-
-            err.status = 404;
-
-            return next(err);
-        }
-
-        // success
-        res.render('user_changepassword');
     });
 };
 
-// handle user update on POST
 exports.user_changepassword_post = [
-    // validate the password form
     check("password", 'Password required')
         .isLength({min: 1})
         .trim(),
@@ -333,46 +235,47 @@ exports.user_changepassword_post = [
         .isLength({min: 1})
         .custom((value, { req }) => value === req.body.password),
     
-    // sanitize the form's fields
     sanitizeBody('password').trim().escape(),
     sanitizeBody('passwordConf').trim().escape(),
 
-    // process request after validation and sanitization
     (req, res, next) => {
-        // extract the validation errors from a request
         var errors = validationResult(req);
-        
-        var oldUser = function(callback) {
-            User.findById(req.body.userid).exec(callback);
-        };
     
         if (!errors.isEmpty()) {
-            // there are errors, render form again with sanitized values/error messages
             res.render('user_changepassword', {errors: errors.array()});
             
             return;
         }
         else {
-            bcrypt.hash(req.body.password, 10, function (err, hash) {
-                req.body.password = hash;
-                
-                // create a user object with escaped/trimmed data and old id
-                var user = new User({
-                    email: oldUser.email,
-                    username: oldUser.username,
-                    password: req.body.password,
-                    _id:req.params.id
-                });
+            User.findById(req.params.id)
+            .exec(function(err, oldUser) {
+                if (err) {
+                    return next(err);
+                } else {
+                    bcrypt.hash(req.body.password, 10, function (err, hash) {
+                        if (err) {
+                            return next(err);
+                        } else {
+                            req.body.password = hash;
 
-                User.findByIdAndUpdate(req.params.id, user, {}, function (err,updatedUser) {
-                    if (err) {
-                        return next(err);
-                    } else {
-                        // update the session with the updated user object
-                        req.session.userid = updatedUser._id;
-                        res.render('user', {user: updatedUser});
-                    }
-                });
+                            var user = new User({
+                                email: oldUser.email,
+                                username: oldUser.username,
+                                password: req.body.password,
+                                _id:req.params.id
+                            });
+
+                            User.findByIdAndUpdate(req.params.id, user, {}, function (err,updatedUser) {
+                                if (err) {
+                                    return next(err);
+                                } else {
+                                    req.session.userid = updatedUser._id;
+                                    res.render('user', {user: updatedUser});
+                                }
+                            }); 
+                        }
+                    });
+                }
             });
         }
     }

@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 
-// create booking schema
 var BookingSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,12 +19,10 @@ var BookingSchema = new mongoose.Schema({
   }
 });
 
-// virtual for Booking's URL
 BookingSchema.virtual('url').get(function () {
   return '/booking/' + this._id;
 });
 
 var User = mongoose.model('Booking', BookingSchema);
 
-// export booking Model
 module.exports = User;

@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 
-// create user schema
 var UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -21,7 +20,6 @@ var UserSchema = new mongoose.Schema({
   }
 });
 
-// authenticate input against database
 UserSchema.statics.authenticate = function (username, password, callback) {
     User.findOne({username: username}).exec(function (err, user) {
         if (err) {
@@ -44,7 +42,6 @@ UserSchema.statics.authenticate = function (username, password, callback) {
     });
 };
 
-// hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
     var user = this;
   
